@@ -1,0 +1,10 @@
+.vscode
+backup
+
+# Document
+doc/*
+pinout/*
+pinout.xlsx
+
+#  Other tools
+*.python
