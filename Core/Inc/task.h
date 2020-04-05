@@ -22,6 +22,7 @@ typedef struct
     uint32_t enable;                        /** Task enable bits. Maximum support 32 tasks */
     uint32_t period[TASK_CAPACITY];         /** Task period (base unit: tick rate) */
     uint32_t current_tick[TASK_CAPACITY];   /** Tasks's tick counter */
+    uint32_t flag;                          /** Task execution flags */
     uint32_t tick_rate;                     /** Task tick rate (Hz) */
 } TaskHandle_t;
 
@@ -39,6 +40,7 @@ void Task_Init(uint32_t ui32Rate);
 TaskHandle_t* Task_GetHandleInstance(void);
 void Task_Enable(uint32_t ui32TaskID, uint32_t ui32Frequency);
 void Task_Disable(uint32_t ui32TaskID);
+void Task_IncreaseTick(void);
 void Task_Execute(void);
 
 void Task_ConfirmButton(void);

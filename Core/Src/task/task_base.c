@@ -84,7 +84,7 @@ TaskHandle_t* Task_GetHandleInstance(void)
  * @param ui32Frequency task execution frequency (unit Hz)
  * Constraint: the frequency must be smaller or equal than base tick rate
 *****************************************************************************/
-void Task_SetEnable(uint32_t ui32TaskID, uint32_t ui32Frequency)
+void Task_Enable(uint32_t ui32TaskID, uint32_t ui32Frequency)
 {
     if (ui32Frequency <= handle.tick_rate)
     {
@@ -101,34 +101,58 @@ void Task_SetEnable(uint32_t ui32TaskID, uint32_t ui32Frequency)
 *****************************************************************************/
 void Task_Disable(uint32_t ui32TaskID)
 {
-    handle.enable &= ~(1 << ui32TaskID);
+    uint32_t mask = ~(1 << ui32TaskID);
+
+    handle.enable &= mask;
     handle.current_tick[ui32TaskID] = 0;
+    handle.flag &= mask;
 }
 
 /******************************************************************************
- * @brief Execute tasks that have been enabled.
- * This function should be called periodically and synchronize with the tick rate
- * set in the Task_Init function.
- * The function will increase the counter of each task and will execute the task
- * if its period is elapsed
+ * @brief Increase tick count of all enabled tasks
+ * The corresponding flag of the task will be set when the period is elapsed
+ * This function should be called <b>inside<b> the timer ISR handler.
+ * The calling rate of this function should synchronize with the tick rate when
+ * calling Task_Init.
  * 
  * @see Task_Init
 *****************************************************************************/
-void Task_Execute(void)
+void Task_IncreaseTick(void)
 {
     int i;
+    uint32_t mask;
 
-    for (i = 0; i < 32; i++)
+    for (i = 0; i < TASK_CAPACITY; i++)
     {
-        if (handle.enable & (1 << i))
+        mask = 1 << i;
+        if (handle.enable & mask)
         {
             if (++handle.current_tick[i] >= handle.period[i])
             {
                 handle.current_tick[i] = 0;
-
-                // TODO: assert null function call
-                TaskList[i]();
+                handle.flag |= mask;
             }
+        }
+    }    
+}
+
+/******************************************************************************
+ * @brief Execute tasks that have been enabled.
+ * This function should be called outside the ISR
+ * 
+*****************************************************************************/
+void Task_Execute(void)
+{
+    int i;
+    uint32_t mask;
+
+    for (i = 0; i < TASK_CAPACITY; i++)
+    {
+        mask = 1 << i;
+        if (handle.flag & mask)
+        {
+            handle.flag &= ~mask;
+            TaskList[i]();      // Execute task here
         }
     }
 }
