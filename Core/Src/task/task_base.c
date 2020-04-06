@@ -1,6 +1,6 @@
 /**
 * @file task_base.c
-* @brief 
+* @brief Task management functions and definitions
 *
 * @details 
 * @date 2020 Apr 05
@@ -18,12 +18,12 @@ static TaskHandle_t handle;
 /* Setup fixed order task list for simplification */
 // TODO: define task list
 const void (*TaskList[TASK_CAPACITY])(void) = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
     Task_UpdateLCD,
+    NULL,
+    Task_Alarm,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

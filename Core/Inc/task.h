@@ -1,8 +1,10 @@
 /**
 * @file task.h
 * @brief Systam task definition
+* @note These tasks are only run in low speed (<= 1kHz) and no priority. Other special
+* high speed tasks such as motor controlling, it is separated into other type of
+* task.
 *
-* @details 
 * @date 2020 Apr 05
 * @version 1
 * @author Ly Hon Quang
@@ -27,15 +29,15 @@ typedef struct
 } TaskHandle_t;
 
 /* Task ID and distribution */
-#define TASK_CONTROL_MOTOR          1
-#define TASK_UPDATE_LCD             5
-#define TASK_READ_POT               6
-#define TASK_READ_SENSOR            7
-#define TASK_ALARM                  8
-#define TASK_CHECK_ERROR            9
-#define TASK_READ_TEMP              10
+/* Note: The task for motor is handling in a separated higher speed timer */
+#define TASK_UPDATE_LCD             1
+#define TASK_READ_POT               2
+#define TASK_ALARM                  3
+#define TASK_CHECK_ERROR            4
+#define TASK_READ_TEMP              5
 
 /****************************Function prototypes******************************/
+/* Task management */
 void Task_Init(uint32_t ui32Rate);
 TaskHandle_t* Task_GetHandleInstance(void);
 void Task_Enable(uint32_t ui32TaskID, uint32_t ui32Frequency);
@@ -43,8 +45,10 @@ void Task_Disable(uint32_t ui32TaskID);
 void Task_IncreaseTick(void);
 void Task_Execute(void);
 
+/* Task functions */
 void Task_ConfirmButton(void);
 void Task_UpdateLCD(void);
+void Task_Alarm(void);
 
 /*****************************************************************************/
 
