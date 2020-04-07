@@ -14,9 +14,8 @@
 #include <stdarg.h>
 #include "lcd.h"
 //include your GPIO library here
-#include "stm32f1xx_hal_gpio.h"
 #include "main.h"
-#include "stm32f103xe.h"
+#include "support.h"
 
 /****************************Private Definitions******************************/
 //Define your pin controlling functions and delay function here to compatible
@@ -49,7 +48,7 @@
 #define LCD_D7_HIGH			HAL_GPIO_WritePin(LCD_DB7_GPIO_Port, LCD_DB7_Pin, GPIO_PIN_SET)
 #define LCD_D7_LOW			HAL_GPIO_WritePin(LCD_DB7_GPIO_Port, LCD_DB7_Pin, GPIO_PIN_RESET)
 
-#define delayus(t)			TIM3_delayus(t)	//unit: micro second
+#define delayus(t)			TIM4_delayus(t)	//unit: micro second
 
 /*********************************Variables***********************************/
 static uint8_t _displayfunction;
