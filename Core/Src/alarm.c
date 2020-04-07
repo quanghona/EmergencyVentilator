@@ -10,7 +10,7 @@
 */
 
 #include "alarm.h"
-#include "stm32f1xx_hal_gpio.h"
+#include "main.h"
 
 /*******************************Definitions***********************************/
 #define _Alarm_TOGGLE()          HAL_GPIO_TogglePin(ALARM_GPIO_Port, ALARM_Pin)
@@ -30,7 +30,7 @@ static AlarmHandle_t handle;
 void Alarm_Init(uint32_t ui32TickRate)
 {
     handle.tick_rate = ui32TickRate;
-    hande.state = -1;
+    handle.state = -1;
     handle.tone = DEFAULT_TONE;
 }
 
@@ -67,7 +67,7 @@ void Alarm_Silence(float f32Time)
     handle.silence_time = (uint32_t)(f32Time * handle.tick_rate);   // Convert to alarm tick base
     handle.tick = 0;
     handle.state = -1;
-    _Alarm_OFF()
+    _Alarm_OFF();
 }
 
 /******************************************************************************
@@ -79,7 +79,7 @@ void Alarm_Disable()
     handle.enable = false;
     handle.silence_time = 0;
     handle.tick = 0;
-    hande.state = -1;
+    handle.state = -1;
     _Alarm_OFF();
 }
 

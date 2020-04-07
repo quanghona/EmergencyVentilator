@@ -13,6 +13,8 @@
 #ifndef POTS_H_
 #define POTS_H_
 
+#include "main.h"
+
 /*******************************Definitions***********************************/
 typedef struct
 {
