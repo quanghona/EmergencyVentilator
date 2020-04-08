@@ -1,5 +1,6 @@
 .vscode
 backup
+build
 
 # Document
 doc/*
@@ -8,3 +9,4 @@ pinout.xlsx
 
 #  Other tools
 *.python
+*.sh
