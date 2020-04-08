@@ -18,6 +18,10 @@
 
 /* List of tones. Tone should read only */
 const uint8_t DEFAULT_TONE[] = {0x05};    // ON-OFF periodically
+const uint8_t NOT_SET_TIMEOUT_TONE[] = {0x02, 0x02, 0x02, 0x02, 0x10};
+const uint8_t PRESSURE_OUTRANGE_TONE[] = {0x02, 0x00};
+const uint8_t ELECTRICAL_FAULT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x14};
+const uint8_t HOMING_FAULT_TONE[] = {0x0A};
 
 /*********************************Variables***********************************/
 static AlarmHandle_t handle;
@@ -33,7 +37,7 @@ static AlarmHandle_t handle;
 void Alarm_Init(uint32_t ui32TickRate)
 {
     handle.tick_rate = ui32TickRate;
-    handle.state = -1;
+    handle.cursor = -1;
     handle.tone = DEFAULT_TONE;
     handle.tone_length = sizeof(DEFAULT_TONE);
     handle.enable = false;
@@ -71,7 +75,7 @@ void Alarm_Silence(float f32Time)
 {
     handle.silence_time = (uint32_t)(f32Time * handle.tick_rate);   // Convert to alarm tick base
     handle.tick = 0;
-    handle.state = -1;
+    handle.cursor = -1;
     _Alarm_OFF();
 }
 
@@ -84,7 +88,7 @@ void Alarm_Disable()
     handle.enable = false;
     handle.silence_time = 0;
     handle.tick = 0;
-    handle.state = -1;
+    handle.cursor = -1;
     _Alarm_OFF();
 }
 

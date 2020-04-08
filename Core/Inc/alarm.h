@@ -25,11 +25,25 @@ typedef struct
     uint32_t tone_length;       /** Tone length */
     uint32_t silence_time;      /** Silence time, tick based */
     uint32_t tick;              /** Tick counter, use for timing in task */
-    int state;                  /** A cursor for playing tone. -1 if under silent time */
+    int cursor;                 /** A cursor for playing tone. -1 if under silent time */
+    struct AlarmStatus               /** Alarm status bits. For managing the various error type status */
+    {
+        uint32_t high_pressure : 1;
+        uint32_t low_pressure : 1;
+        uint32_t electrical : 1;
+        uint32_t position_error : 1;
+        uint32_t homing_fault : 1;
+        uint32_t not_set : 1;
+        uint32_t assist_a : 1;
+    } status;
 } AlarmHandle_t;
 
 /* List of tone */
 extern const uint8_t DEFAULT_TONE[];
+extern const uint8_t NOT_SET_TIMEOUT_TONE[];
+extern const uint8_t PRESSURE_OUTRANGE_TONE[];
+extern const uint8_t ELECTRICAL_FAULT_TONE[];
+extern const uint8_t HOMING_FAULT_TONE[];
 
 /****************************Function prototypes******************************/
 void Alarm_Init(uint32_t ui32TickRate);
