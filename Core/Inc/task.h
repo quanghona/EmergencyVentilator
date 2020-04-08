@@ -15,9 +15,11 @@
 #ifndef TASK_H_
 #define TASK_H_
 
+#include "main.h"
+
 /*******************************Definitions***********************************/
 
-const uint32_t TASK_CAPACITY = 32;
+#define TASK_CAPACITY 32
 
 typedef struct
 {
@@ -33,8 +35,12 @@ typedef struct
 #define TASK_UPDATE_LCD             1
 #define TASK_READ_POT               2
 #define TASK_ALARM                  3
-#define TASK_CHECK_ERROR            4
-#define TASK_READ_TEMP              5
+#define TASK_CONIRM_BUTTON          4
+#define TASK_SILENCE_BUTTON         5
+#define TASK_LIMIT_SWITCH           6
+#define TASK_MODE_SWITCH            7
+#define TASK_CHECK_ERROR            30
+#define TASK_READ_TEMP              31
 
 /****************************Function prototypes******************************/
 /* Task management */
@@ -49,6 +55,7 @@ void Task_Execute(void);
 void Task_ConfirmButton(void);
 void Task_UpdateLCD(void);
 void Task_Alarm(void);
+void Task_ReadPOTs(void);
 
 /*****************************************************************************/
 

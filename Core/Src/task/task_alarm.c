@@ -37,9 +37,9 @@ void Task_Alarm(void)
 
             default:
                 /* Tone loop here */
-                if (handle->tick >= handle->tone[state])
+                if (handle->tick >= (uint32_t)(handle->tone[handle->state]))
                 {
-                    handle->state = (state + 1) % sizeof(handle->tone);
+                    handle->state = (handle->state + 1) % handle->tone_length;
                     handle->tick = 0;
                     Alarm_Toggle();
                 }

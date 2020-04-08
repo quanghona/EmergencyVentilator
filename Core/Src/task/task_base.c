@@ -18,10 +18,10 @@ static TaskHandle_t handle;
 /* Setup fixed order task list for simplification */
 // TODO: define task list
 const void (*TaskList[TASK_CAPACITY])(void) = {
+    NULL,
     Task_UpdateLCD,
     NULL,
     Task_Alarm,
-    NULL,
     NULL,
     NULL,
     NULL,
@@ -57,7 +57,7 @@ const void (*TaskList[TASK_CAPACITY])(void) = {
 /******************************************************************************
  * @brief Initialize Task handle structure
  * 
- * @param ui32Rate Task tick rate
+ * @param ui32Rate Task tick rate (Unit Hz)
 *****************************************************************************/
 void Task_Init(uint32_t ui32Rate)
 {
@@ -127,7 +127,7 @@ void Task_IncreaseTick(void)
         mask = 1 << i;
         if (handle.enable & mask)
         {
-            if (++handle.current_tick[i] >= handle.period[i])
+            if (++(handle.current_tick[i]) >= handle.period[i])
             {
                 handle.current_tick[i] = 0;
                 handle.flag |= mask;
