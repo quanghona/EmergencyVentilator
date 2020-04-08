@@ -16,6 +16,9 @@
 #define _Alarm_TOGGLE()          HAL_GPIO_TogglePin(ALARM_GPIO_Port, ALARM_Pin)
 #define _Alarm_OFF()             HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, GPIO_PIN_RESET)
 
+/* List of tones. Tone should read only */
+const uint8_t DEFAULT_TONE[] = {0x05};    // ON-OFF periodically
+
 /*********************************Variables***********************************/
 static AlarmHandle_t handle;
 
@@ -32,6 +35,8 @@ void Alarm_Init(uint32_t ui32TickRate)
     handle.tick_rate = ui32TickRate;
     handle.state = -1;
     handle.tone = DEFAULT_TONE;
+    handle.tone_length = sizeof(DEFAULT_TONE);
+    handle.enable = false;
 }
 
 /******************************************************************************
@@ -87,10 +92,13 @@ void Alarm_Disable()
  * @brief Set alarm tone
  *
  * @param pui8Tone a constant pointer to tone array
+ * @param ui32Len Length of the tone, this param is needed because the length
+ * information will be loss when pass tone as pointer to the function
 *****************************************************************************/
-void Alarm_SetTone(const uint8_t* pui8Tone)
+void Alarm_SetTone(const uint8_t* pui8Tone, uint32_t ui32Len)
 {
     handle.tone = pui8Tone;
+    handle.tone_length = ui32Len;
 }
 
 /******************************************************************************

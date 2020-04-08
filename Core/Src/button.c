@@ -11,18 +11,35 @@
 
 #include "button.h"
 
-static bool _state[MAX_BUTTON];
+/*********************************Variables***********************************/
+static ButtonEvent_e _event[MAX_BUTTON];
 
 /****************************Function definitions*****************************/
 
-bool Button_GetState(Button_e button)
+/******************************************************************************
+ * @brief Get button event
+ * 
+ * @param button specify the button to get event
+ * @return ButtonEvent_e event result
+*****************************************************************************/
+ButtonEvent_e Button_GetEvent(Button_e button)
 {
-    return _state[button];
+    return _event[button];
 }
 
-void Button_SetState(Button_e button, bool state)
+/******************************************************************************
+ * @brief Set event of a button.
+ * This function has 2 purpose:
+ * - Set the event that detect by hardware
+ * - Clear the event after processing it
+ * 
+ * @param button button to set the event
+ * @param event event value
+*****************************************************************************/
+void Button_SetState(Button_e button, ButtonEvent_e event)
 {
-    _state[button] = state;
+    if (event < MAX_EVENT)
+        _event[button] = event;
 }
 
 /* End of button.c */
