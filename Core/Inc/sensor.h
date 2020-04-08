@@ -19,12 +19,16 @@
 
 typedef struct
 {
-    float pressure;
-    float angle;
-    float ris;
-    float lis;
+    float pressure;         /** Pressure value */
+    float angle;            /** Angle measurement value */
+    float ris;              /** Current of the right half of H bridge */
+    float lis;              /** Current of the left half of H bridge */
     // float temp;
     // float humi;
+
+    float pip;              /** Peak inspiratory pressure */
+    float plateau;          /** Plateau pressure */
+    float peep;             /** Positive end-expiratory pressure */
 } SensorData_t;
 
 /****************************Function prototypes******************************/
