@@ -14,32 +14,31 @@
 #include <stdarg.h>
 #include "lcd.h"
 //include your GPIO library here
-#include "stm32f1xx_hal_gpio.h"
 #include "main.h"
-#include "stm32f103xe.h"
+#include "support.h"
 
 /****************************Private Definitions******************************/
 //Define your pin controlling functions and delay function here to compatible
 //with your hardware
-#define LCD_RS_HIGH			HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_SET)
-#define LCD_RS_LOW			HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET)
-// #define LCD_RW_HIGH		NULL		//comment RW definitions if no use
-// #define LCD_RW_LOW		NULL
-#define LCD_E_HIGH			HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET)
-#define LCD_E_LOW			HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_RESET)
+#define LCD_RS_HIGH         HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_SET)
+#define LCD_RS_LOW          HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET)
+#define LCD_RW_HIGH         HAL_GPIO_WritePin(LCD_RW_GPIO_Port, LCD_RW_Pin, GPIO_PIN_SET)
+#define LCD_RW_LOW          HAL_GPIO_WritePin(LCD_RW_GPIO_Port, LCD_RW_Pin, GPIO_PIN_RESET)
+#define LCD_E_HIGH          HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET)
+#define LCD_E_LOW           HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_RESET)
 /* If hardware use shift register, function that need to rewrite are:
  - LCD_DataPinWrite
  - LCD_write4bits
  - LCD_write8bits
 */
-#define LCD_D0_HIGH			NULL
-#define LCD_D0_LOW			NULL
-#define LCD_D1_HIGH			NULL
-#define LCD_D1_LOW			NULL
-#define LCD_D2_HIGH			NULL
-#define LCD_D2_LOW			NULL
-#define LCD_D3_HIGH			NULL
-#define LCD_D3_LOW			NULL
+// #define LCD_D0_HIGH			NULL
+// #define LCD_D0_LOW			NULL
+// #define LCD_D1_HIGH			NULL
+// #define LCD_D1_LOW			NULL
+// #define LCD_D2_HIGH			NULL
+// #define LCD_D2_LOW			NULL
+// #define LCD_D3_HIGH			NULL
+// #define LCD_D3_LOW			NULL
 #define LCD_D4_HIGH			HAL_GPIO_WritePin(LCD_DB4_GPIO_Port, LCD_DB4_Pin, GPIO_PIN_SET)
 #define LCD_D4_LOW			HAL_GPIO_WritePin(LCD_DB4_GPIO_Port, LCD_DB4_Pin, GPIO_PIN_RESET)
 #define LCD_D5_HIGH			HAL_GPIO_WritePin(LCD_DB5_GPIO_Port, LCD_DB5_Pin, GPIO_PIN_SET)
@@ -49,7 +48,7 @@
 #define LCD_D7_HIGH			HAL_GPIO_WritePin(LCD_DB7_GPIO_Port, LCD_DB7_Pin, GPIO_PIN_SET)
 #define LCD_D7_LOW			HAL_GPIO_WritePin(LCD_DB7_GPIO_Port, LCD_DB7_Pin, GPIO_PIN_RESET)
 
-#define delayus(t)			TIM3_delayus(t)	//unit: micro second
+#define delayus(t)			TIM4_delayus(t)	//unit: micro second
 
 /*********************************Variables***********************************/
 static uint8_t _displayfunction;
@@ -89,69 +88,69 @@ static void LCD_Putstring(const char *pcBuf, uint8_t ui8Len);
  *****************************************************************************/
 void LCD_init(uint8_t Mode, uint8_t nLine, uint8_t Dotsize)
 {
-	_displayfunction = Mode | nLine | Dotsize;
+    _displayfunction = Mode | nLine | Dotsize;
 
-	// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
-	// according to datasheet, we need at least 40ms after power rises above 2.7V
-	// before sending commands.
-	delayus(40000);
+    // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
+    // according to datasheet, we need at least 40ms after power rises above 2.7V
+    // before sending commands.
+    delayus(40000);
 
-	// Now we pull both RS and R/W low to begin commands
-	LCD_RS_LOW;
-	LCD_E_LOW;
-	#if defined(LCD_RW_LOW)
-	LCD_RW_LOW;
-	#endif
+    // Now we pull both RS and R/W low to begin commands
+    LCD_RS_LOW;
+    LCD_E_LOW;
+    #if defined(LCD_RW_LOW)
+    LCD_RW_LOW;
+    #endif
 
-	//put the LCD into 4 bit or 8 bit mode
-	if (!(_displayfunction & LCD_8BITMODE)) {
-	  // this is according to the hitachi HD44780 datasheet
-	  // figure 24, pg 46
+    //put the LCD into 4 bit or 8 bit mode
+    if (!(_displayfunction & LCD_8BITMODE)) {
+      // this is according to the hitachi HD44780 datasheet
+      // figure 24, pg 46
 
-	  // we start in 8bit mode, try to set 4 bit mode
-	  LCD_write4bits(0x03);
-	  delayus(4500); // wait min 4.1ms
+      // we start in 8bit mode, try to set 4 bit mode
+      LCD_write4bits(0x03);
+      delayus(4500); // wait min 4.1ms
 
-	  // second try
-	  LCD_write4bits(0x03);
-	  delayus(4500); // wait min 4.1ms
+      // second try
+      LCD_write4bits(0x03);
+      delayus(4500); // wait min 4.1ms
 
-	  // third go!
-	  LCD_write4bits(0x03);
-	  delayus(150);
+      // third go!
+      LCD_write4bits(0x03);
+      delayus(150);
 
-	  // finally, set to 4-bit interface
-	  LCD_write4bits(0x02);
-	} else {
-	  // this is according to the hitachi HD44780 datasheet
-	  // page 45 figure 23
+      // finally, set to 4-bit interface
+      LCD_write4bits(0x02);
+    } else {
+      // this is according to the hitachi HD44780 datasheet
+      // page 45 figure 23
 
-	  // Send function set command sequence
-	  LCD_command(LCD_FUNCTIONSET | _displayfunction);
-	  delayus(4500);  // wait more than 4.1ms
+      // Send function set command sequence
+      LCD_command(LCD_FUNCTIONSET | _displayfunction);
+      delayus(4500);  // wait more than 4.1ms
 
-	  // second try
-	  LCD_command(LCD_FUNCTIONSET | _displayfunction);
-	  delayus(150);
+      // second try
+      LCD_command(LCD_FUNCTIONSET | _displayfunction);
+      delayus(150);
 
-	  // third go
-	  LCD_command(LCD_FUNCTIONSET | _displayfunction);
-	}
+      // third go
+      LCD_command(LCD_FUNCTIONSET | _displayfunction);
+    }
 
-	// finally, set # lines, font size, etc.
-	LCD_command(LCD_FUNCTIONSET | _displayfunction);
+    // finally, set # lines, font size, etc.
+    LCD_command(LCD_FUNCTIONSET | _displayfunction);
 
-	// turn the display on with no cursor or blinking default
-	_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-	LCD_display();
+    // turn the display on with no cursor or blinking default
+    _displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
+    LCD_display();
 
-	// clear it off
-	LCD_clear();
+    // clear it off
+    LCD_clear();
 
-	// Initialize to default text direction (for romance languages)
-	_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
-	// set the entry mode
-	LCD_command(LCD_ENTRYMODESET | _displaymode);
+    // Initialize to default text direction (for romance languages)
+    _displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+    // set the entry mode
+    LCD_command(LCD_ENTRYMODESET | _displaymode);
 }
 
 /******************************************************************************
@@ -164,8 +163,8 @@ void LCD_init(uint8_t Mode, uint8_t nLine, uint8_t Dotsize)
  *****************************************************************************/
 void LCD_clear(void)
 {
-	LCD_command(LCD_CLEARDISPLAY);	// clear display, set cursor position to zero
-	delayus(2000);  // this command takes a long time!
+    LCD_command(LCD_CLEARDISPLAY);	// clear display, set cursor position to zero
+    delayus(2000);  // this command takes a long time!
 }
 
 /******************************************************************************
@@ -177,8 +176,8 @@ void LCD_clear(void)
  *****************************************************************************/
 void LCD_home(void)
 {
-	LCD_command(LCD_RETURNHOME);  // set cursor position to zero
-	delayus(2000);  // this command takes a long time!
+    LCD_command(LCD_RETURNHOME);  // set cursor position to zero
+    delayus(2000);  // this command takes a long time!
 }
 
 /******************************************************************************
@@ -190,8 +189,8 @@ void LCD_home(void)
  *****************************************************************************/
 void LCD_noDisplay(void)
 {
-	_displaycontrol &= ~LCD_DISPLAYON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol &= ~LCD_DISPLAYON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -203,8 +202,8 @@ void LCD_noDisplay(void)
  *****************************************************************************/
 void LCD_display(void)
 {
-	_displaycontrol |= LCD_DISPLAYON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol |= LCD_DISPLAYON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -216,8 +215,8 @@ void LCD_display(void)
  *****************************************************************************/
 void LCD_noBlink(void)
 {
-	_displaycontrol &= ~LCD_BLINKON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol &= ~LCD_BLINKON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -229,8 +228,8 @@ void LCD_noBlink(void)
  *****************************************************************************/
 void LCD_blink(void)
 {
-	_displaycontrol |= LCD_BLINKON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol |= LCD_BLINKON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -242,8 +241,8 @@ void LCD_blink(void)
  *****************************************************************************/
 void LCD_noCursor(void)
 {
-	_displaycontrol &= ~LCD_CURSORON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol &= ~LCD_CURSORON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -255,8 +254,8 @@ void LCD_noCursor(void)
  *****************************************************************************/
 void LCD_cursor(void)
 {
-	_displaycontrol |= LCD_CURSORON;
-	LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
+    _displaycontrol |= LCD_CURSORON;
+    LCD_command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 /******************************************************************************
@@ -269,7 +268,7 @@ void LCD_cursor(void)
  *****************************************************************************/
 void LCD_scrollDisplayLeft(void)
 {
-	LCD_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+    LCD_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 
 /******************************************************************************
@@ -282,7 +281,7 @@ void LCD_scrollDisplayLeft(void)
  *****************************************************************************/
 void LCD_scrollDisplayRight(void)
 {
-	LCD_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+    LCD_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 /******************************************************************************
@@ -294,8 +293,8 @@ void LCD_scrollDisplayRight(void)
  *****************************************************************************/
 void LCD_leftToRight(void)
 {
-	_displaymode |= LCD_ENTRYLEFT;
-	LCD_command(LCD_ENTRYMODESET | _displaymode);
+    _displaymode |= LCD_ENTRYLEFT;
+    LCD_command(LCD_ENTRYMODESET | _displaymode);
 }
 
 /******************************************************************************
@@ -307,8 +306,8 @@ void LCD_leftToRight(void)
  *****************************************************************************/
 void LCD_rightToLeft(void)
 {
-	_displaymode &= ~LCD_ENTRYLEFT;
-	LCD_command(LCD_ENTRYMODESET | _displaymode);
+    _displaymode &= ~LCD_ENTRYLEFT;
+    LCD_command(LCD_ENTRYMODESET | _displaymode);
 }
 
 /******************************************************************************
@@ -320,8 +319,8 @@ void LCD_rightToLeft(void)
  *****************************************************************************/
 void LCD_autoscroll(void)
 {
-	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
-	LCD_command(LCD_ENTRYMODESET | _displaymode);
+    _displaymode |= LCD_ENTRYSHIFTINCREMENT;
+    LCD_command(LCD_ENTRYMODESET | _displaymode);
 }
 
 /******************************************************************************
@@ -333,8 +332,8 @@ void LCD_autoscroll(void)
  *****************************************************************************/
 void LCD_noAutoscroll(void)
 {
-	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
-	LCD_command(LCD_ENTRYMODESET | _displaymode);
+    _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+    LCD_command(LCD_ENTRYMODESET | _displaymode);
 }
 
 /******************************************************************************
@@ -349,13 +348,13 @@ void LCD_noAutoscroll(void)
  *****************************************************************************/
 void LCD_createChar(uint8_t location, uint8_t charmap[])
 {
-	uint8_t i;
+    uint8_t i;
 
-	location &= 0x7; // we only have 8 locations 0-7
-	LCD_command(LCD_SETCGRAMADDR | (location << 3));
-	for (i=0; i<8; i++) {
-	  LCD_write(charmap[i]);
-	}
+    location &= 0x7; // we only have 8 locations 0-7
+    LCD_command(LCD_SETCGRAMADDR | (location << 3));
+    for (i=0; i<8; i++) {
+      LCD_write(charmap[i]);
+    }
 }
 
 /******************************************************************************
@@ -369,13 +368,13 @@ void LCD_createChar(uint8_t location, uint8_t charmap[])
  *****************************************************************************/
 void LCD_setCursor(uint8_t ui8Col, uint8_t ui8Row)
 {
-	const uint8_t max_lines = sizeof(_Row_Offsets) / sizeof(*_Row_Offsets);
+    const uint8_t max_lines = sizeof(_Row_Offsets) / sizeof(*_Row_Offsets);
 
-	if ( ui8Row >= max_lines ) {
-	  ui8Row = max_lines - 1;    // we count rows starting w/0
-	}
+    if ( ui8Row >= max_lines ) {
+      ui8Row = max_lines - 1;    // we count rows starting w/0
+    }
 
-	LCD_command(LCD_SETDDRAMADDR | (ui8Col + _Row_Offsets[ui8Row]));
+    LCD_command(LCD_SETDDRAMADDR | (ui8Col + _Row_Offsets[ui8Row]));
 }
 
 /******************************************************************************
@@ -418,220 +417,220 @@ void LCD_setCursor(uint8_t ui8Col, uint8_t ui8Row)
  *****************************************************************************/
 void LCD_printf(uint8_t x, uint8_t y, const char *pcString, ...)
 {
-	static unsigned int ulPos, ulCount, ulNeg;
-	unsigned long ulValue, ulBase, ulIdx;
-	char *pcStr, pcBuf[16], cFill;
-	va_list vaArgP;
+    static unsigned int ulPos, ulCount, ulNeg;
+    unsigned long ulValue, ulBase, ulIdx;
+    char *pcStr, pcBuf[16], cFill;
+    va_list vaArgP;
 
-	LCD_setCursor(x,y);
-	va_start(vaArgP, pcString);		// Start the varargs processing.
+    LCD_setCursor(x,y);
+    va_start(vaArgP, pcString);		// Start the varargs processing.
 
-	// Loop while there are more characters in the string.
-	while(*pcString)
-	{
-		for(ulIdx = 0; (pcString[ulIdx] != '%') && (pcString[ulIdx] != '\0');
-				ulIdx++);		// Find the first non-% character, or the end of the string.
+    // Loop while there are more characters in the string.
+    while(*pcString)
+    {
+        for(ulIdx = 0; (pcString[ulIdx] != '%') && (pcString[ulIdx] != '\0');
+                ulIdx++);		// Find the first non-% character, or the end of the string.
 
-		LCD_Putstring(pcString, ulIdx);		// Write this portion of the string.
+        LCD_Putstring(pcString, ulIdx);		// Write this portion of the string.
 
-		pcString += ulIdx;		// Skip the portion of the string that was written.
+        pcString += ulIdx;		// Skip the portion of the string that was written.
 
-		if(*pcString == '%')		// See if the next character is a %.
-		{
-			pcString++;			// Skip the %.
+        if(*pcString == '%')		// See if the next character is a %.
+        {
+            pcString++;			// Skip the %.
 
-			// Set the digit count to zero, and the fill character to space
-			// (i.e. to the defaults).
-			ulCount = 0;
-			cFill = ' ';
+            // Set the digit count to zero, and the fill character to space
+            // (i.e. to the defaults).
+            ulCount = 0;
+            cFill = ' ';
 
-			// It may be necessary to get back here to process more characters.
-			// Goto's aren't pretty, but effective.  I feel extremely dirty for
-			// using not one but two of the beasts.
-			again:
+            // It may be necessary to get back here to process more characters.
+            // Goto's aren't pretty, but effective.  I feel extremely dirty for
+            // using not one but two of the beasts.
+            again:
 
-			// Determine how to handle the next character.
-			switch(*pcString++)
-			{
-			// Handle the digit characters.
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			{
-				// If this is a zero, and it is the first digit, then the
-				// fill character is a zero instead of a space.
-				if((pcString[-1] == '0') && (ulCount == 0))
-					cFill = '0';
+            // Determine how to handle the next character.
+            switch(*pcString++)
+            {
+            // Handle the digit characters.
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            {
+                // If this is a zero, and it is the first digit, then the
+                // fill character is a zero instead of a space.
+                if((pcString[-1] == '0') && (ulCount == 0))
+                    cFill = '0';
 
-				// Update the digit count.
-				ulCount *= 10;
-				ulCount += pcString[-1] - '0';
+                // Update the digit count.
+                ulCount *= 10;
+                ulCount += pcString[-1] - '0';
 
-				// Get the next character.
-				goto again;
-			}
+                // Get the next character.
+                goto again;
+            }
 
-			// Handle the %c command.
-			case 'c':
-			{
-				ulValue = va_arg(vaArgP, unsigned long);	// Get the value from the varargs.
-				LCD_Putstring((char *)&ulValue, 1);		// Print out the character.
+            // Handle the %c command.
+            case 'c':
+            {
+                ulValue = va_arg(vaArgP, unsigned long);	// Get the value from the varargs.
+                LCD_Putstring((char *)&ulValue, 1);		// Print out the character.
 
-				// This command has been handled.
-				break;
-			}
+                // This command has been handled.
+                break;
+            }
 
-			// Handle the %d and %i commands.
-			case 'd':
-			case 'i':
-			{
-				ulValue = va_arg(vaArgP, unsigned long);		// Get the value from the varargs.
-				ulPos = 0;		// Reset the buffer position.
+            // Handle the %d and %i commands.
+            case 'd':
+            case 'i':
+            {
+                ulValue = va_arg(vaArgP, unsigned long);		// Get the value from the varargs.
+                ulPos = 0;		// Reset the buffer position.
 
-				// If the value is negative, make it positive and indicate
-				// that a minus sign is needed.
-				if((long)ulValue < 0)
-				{
-					ulValue = -(long)ulValue;			// Make the value positive.
-					ulNeg = 1;	// Indicate that the value is negative.
-				}
-				else
-				{
-					// Indicate that the value is positive so that a minus
-					// sign isn't inserted.
-					ulNeg = 0;
-				}
+                // If the value is negative, make it positive and indicate
+                // that a minus sign is needed.
+                if((long)ulValue < 0)
+                {
+                    ulValue = -(long)ulValue;			// Make the value positive.
+                    ulNeg = 1;	// Indicate that the value is negative.
+                }
+                else
+                {
+                    // Indicate that the value is positive so that a minus
+                    // sign isn't inserted.
+                    ulNeg = 0;
+                }
 
-				ulBase = 10;		// Set the base to 10.
+                ulBase = 10;		// Set the base to 10.
 
-				// Convert the value to ASCII.
-				goto convert;
-			}
+                // Convert the value to ASCII.
+                goto convert;
+            }
 
-			// Handle the %s command.
-			case 's':
-			{
-				pcStr = va_arg(vaArgP, char *);		// Get the string pointer from the varargs.
+            // Handle the %s command.
+            case 's':
+            {
+                pcStr = va_arg(vaArgP, char *);		// Get the string pointer from the varargs.
 
-				for(ulIdx = 0; pcStr[ulIdx] != '\0'; ulIdx++);		// Determine the length of the string.
-				LCD_Putstring(pcStr, ulIdx);		// Write the string.
+                for(ulIdx = 0; pcStr[ulIdx] != '\0'; ulIdx++);		// Determine the length of the string.
+                LCD_Putstring(pcStr, ulIdx);		// Write the string.
 
-				// Write any required padding spaces
-				if(ulCount > ulIdx)
-				{
-					ulCount -= ulIdx;
-					while(ulCount--)
-						LCD_Putstring(" ", 1);
-				}
-				// This command has been handled.
-				break;
-			}
+                // Write any required padding spaces
+                if(ulCount > ulIdx)
+                {
+                    ulCount -= ulIdx;
+                    while(ulCount--)
+                        LCD_Putstring(" ", 1);
+                }
+                // This command has been handled.
+                break;
+            }
 
-			// Handle the %u command.
-			case 'u':
-			{
-				ulValue = va_arg(vaArgP, unsigned long);	// Get the value from the varargs.
-				ulPos = 0;			// Reset the buffer position.
-				ulBase = 10;		// Set the base to 10.
+            // Handle the %u command.
+            case 'u':
+            {
+                ulValue = va_arg(vaArgP, unsigned long);	// Get the value from the varargs.
+                ulPos = 0;			// Reset the buffer position.
+                ulBase = 10;		// Set the base to 10.
 
-				// Indicate that the value is positive so that a minus sign
-				// isn't inserted.
-				ulNeg = 0;
+                // Indicate that the value is positive so that a minus sign
+                // isn't inserted.
+                ulNeg = 0;
 
-				goto convert;		// Convert the value to ASCII.
-			}
+                goto convert;		// Convert the value to ASCII.
+            }
 
-			// Handle the %x and %X commands.  Note that they are treated
-			// identically; i.e. %X will use lower case letters for a-f
-			// instead of the upper case letters is should use.  We also
-			// alias %p to %x.
-			case 'x':
-			case 'X':
-			case 'p':
-			{
-				ulValue = va_arg(vaArgP, unsigned long);		// Get the value from the varargs.
-				ulPos = 0;		// Reset the buffer position.
-				ulBase = 16;			// Set the base to 16.
+            // Handle the %x and %X commands.  Note that they are treated
+            // identically; i.e. %X will use lower case letters for a-f
+            // instead of the upper case letters is should use.  We also
+            // alias %p to %x.
+            case 'x':
+            case 'X':
+            case 'p':
+            {
+                ulValue = va_arg(vaArgP, unsigned long);		// Get the value from the varargs.
+                ulPos = 0;		// Reset the buffer position.
+                ulBase = 16;			// Set the base to 16.
 
-				// Indicate that the value is positive so that a minus sign
-				// isn't inserted.
-				ulNeg = 0;
+                // Indicate that the value is positive so that a minus sign
+                // isn't inserted.
+                ulNeg = 0;
 
-				// Determine the number of digits in the string version of
-				// the value.
-				convert:
-				for(ulIdx = 1;
-						(((ulIdx * ulBase) <= ulValue) &&
-								(((ulIdx * ulBase) / ulBase) == ulIdx));
-						ulIdx *= ulBase, ulCount--);
+                // Determine the number of digits in the string version of
+                // the value.
+                convert:
+                for(ulIdx = 1;
+                        (((ulIdx * ulBase) <= ulValue) &&
+                                (((ulIdx * ulBase) / ulBase) == ulIdx));
+                        ulIdx *= ulBase, ulCount--);
 
-				// If the value is negative, reduce the count of padding
-				// characters needed.
-				if(ulNeg)
-					ulCount--;
+                // If the value is negative, reduce the count of padding
+                // characters needed.
+                if(ulNeg)
+                    ulCount--;
 
-				// If the value is negative and the value is padded with
-				// zeros, then place the minus sign before the padding.
-				if(ulNeg && (cFill == '0'))
-				{
-					pcBuf[ulPos++] = '-';			// Place the minus sign in the output buffer.
+                // If the value is negative and the value is padded with
+                // zeros, then place the minus sign before the padding.
+                if(ulNeg && (cFill == '0'))
+                {
+                    pcBuf[ulPos++] = '-';			// Place the minus sign in the output buffer.
 
-					// The minus sign has been placed, so turn off the
-					// negative flag.
-					ulNeg = 0;
-				}
+                    // The minus sign has been placed, so turn off the
+                    // negative flag.
+                    ulNeg = 0;
+                }
 
-				// Provide additional padding at the beginning of the
-				// string conversion if needed.
-				if((ulCount > 1) && (ulCount < 16))
-				{
-					for(ulCount--; ulCount; ulCount--)
-						pcBuf[ulPos++] = cFill;
-				}
+                // Provide additional padding at the beginning of the
+                // string conversion if needed.
+                if((ulCount > 1) && (ulCount < 16))
+                {
+                    for(ulCount--; ulCount; ulCount--)
+                        pcBuf[ulPos++] = cFill;
+                }
 
-				// If the value is negative, then place the minus sign
-				// before the number.
-				if(ulNeg)
-					pcBuf[ulPos++] = '-';			// Place the minus sign in the output buffer.
+                // If the value is negative, then place the minus sign
+                // before the number.
+                if(ulNeg)
+                    pcBuf[ulPos++] = '-';			// Place the minus sign in the output buffer.
 
-				// Convert the value into a string.
-				for(; ulIdx; ulIdx /= ulBase)
-					pcBuf[ulPos++] = g_pcHex[(ulValue / ulIdx) % ulBase];
+                // Convert the value into a string.
+                for(; ulIdx; ulIdx /= ulBase)
+                    pcBuf[ulPos++] = g_pcHex[(ulValue / ulIdx) % ulBase];
 
-				LCD_Putstring(pcBuf, ulPos);		// Write the string.
+                LCD_Putstring(pcBuf, ulPos);		// Write the string.
 
-				// This command has been handled.
-				break;
-			}
+                // This command has been handled.
+                break;
+            }
 
-			// Handle the %% command.
-			case '%':
-			{
-				LCD_Putstring(pcString - 1, 1);		// Simply write a single %.
+            // Handle the %% command.
+            case '%':
+            {
+                LCD_Putstring(pcString - 1, 1);		// Simply write a single %.
 
-				// This command has been handled.
-				break;
-			}
+                // This command has been handled.
+                break;
+            }
 
-			// Handle all other commands.
-			default:
-			{
-				LCD_Putstring("ERROR", 5);		// Indicate an error.
+            // Handle all other commands.
+            default:
+            {
+                LCD_Putstring("ERROR", 5);		// Indicate an error.
 
-				// This command has been handled.
-				break;
-			}
-			}
-		}
-	}
-	va_end(vaArgP);	// End the varargs processing.
+                // This command has been handled.
+                break;
+            }
+            }
+        }
+    }
+    va_end(vaArgP);	// End the varargs processing.
 }
 
 /******************************************************************************
@@ -644,7 +643,7 @@ void LCD_printf(uint8_t x, uint8_t y, const char *pcString, ...)
  *****************************************************************************/
 void LCD_write(uint8_t value)
 {
-	LCD_send(value, 1);
+    LCD_send(value, 1);
 }
 
 /******************************************************************************
@@ -657,7 +656,7 @@ void LCD_write(uint8_t value)
  *****************************************************************************/
 void LCD_command(uint8_t value)
 {
-	LCD_send(value, 0);
+    LCD_send(value, 0);
 }
 
 /*************************Private function definition*************************/
@@ -676,43 +675,44 @@ void LCD_command(uint8_t value)
  *****************************************************************************/
 static void LCD_DataPinWrite(uint8_t DataPin, uint8_t Value)
 {
-	switch (DataPin)
-	{
-		case 0:
-			Value ? LCD_D0_HIGH : LCD_D0_LOW;
-			break;
+    switch (DataPin)
+    {
+#if defined(LCD_D0_HIGH)
+        case 0:
+            Value ? LCD_D0_HIGH : LCD_D0_LOW;
+            break;
 
-		case 1:
-			Value ? LCD_D1_HIGH : LCD_D1_LOW;
-			break;
+        case 1:
+            Value ? LCD_D1_HIGH : LCD_D1_LOW;
+            break;
 
-		case 2:
-			Value ? LCD_D2_HIGH : LCD_D2_LOW;
-			break;
+        case 2:
+            Value ? LCD_D2_HIGH : LCD_D2_LOW;
+            break;
 
-		case 3:
-			Value ? LCD_D3_HIGH : LCD_D3_LOW;
-			break;
+        case 3:
+            Value ? LCD_D3_HIGH : LCD_D3_LOW;
+            break;
+#endif
+        case 4:
+            Value ? LCD_D4_HIGH : LCD_D4_LOW;
+            break;
 
-		case 4:
-			Value ? LCD_D4_HIGH : LCD_D4_LOW;
-			break;
+        case 5:
+            Value ? LCD_D5_HIGH : LCD_D5_LOW;
+            break;
 
-		case 5:
-			Value ? LCD_D5_HIGH : LCD_D5_LOW;
-			break;
+        case 6:
+            Value ? LCD_D6_HIGH : LCD_D6_LOW;
+            break;
 
-		case 6:
-			Value ? LCD_D6_HIGH : LCD_D6_LOW;
-			break;
+        case 7:
+            Value ? LCD_D7_HIGH : LCD_D7_LOW;
+            break;
 
-		case 7:
-			Value ? LCD_D7_HIGH : LCD_D7_LOW;
-			break;
-
-		default:
-			return;
-	}
+        default:
+            return;
+    }
 }
 
 /******************************************************************************
@@ -728,21 +728,21 @@ static void LCD_DataPinWrite(uint8_t DataPin, uint8_t Value)
  *****************************************************************************/
 static void LCD_send(uint8_t value, uint8_t mode)
 {
-	// write either command or data, with automatic 4/8-bit selection
-	mode ? LCD_RS_HIGH : LCD_RS_LOW;
+    // write either command or data, with automatic 4/8-bit selection
+    mode ? LCD_RS_HIGH : LCD_RS_LOW;
 
-	// if there is a RW pin indicated, set it low to Write
-	#if defined(LCD_RW_LOW)
-	LCD_RW_LOW;
-	#endif
+    // if there is a RW pin indicated, set it low to Write
+    #if defined(LCD_RW_LOW)
+    LCD_RW_LOW;
+    #endif
 
-	if (_displayfunction & LCD_8BITMODE)
-		LCD_write8bits(value);
-	else
-	{
-		LCD_write4bits(value >> 4);
-		LCD_write4bits(value);
-	}
+    if (_displayfunction & LCD_8BITMODE)
+        LCD_write8bits(value);
+    else
+    {
+        LCD_write4bits(value >> 4);
+        LCD_write4bits(value);
+    }
 }
 
 /******************************************************************************
@@ -754,12 +754,12 @@ static void LCD_send(uint8_t value, uint8_t mode)
  *****************************************************************************/
 static void LCD_pulseEnable(void)
 {
-	LCD_E_LOW;
-	delayus(1);
-	LCD_E_HIGH;
-	delayus(1);    // enable pulse must be >450ns
-	LCD_E_LOW;
-	delayus(100);   // commands need > 37us to settle
+    LCD_E_LOW;
+    delayus(1);
+    LCD_E_HIGH;
+    delayus(1);    // enable pulse must be >450ns
+    LCD_E_LOW;
+    delayus(100);   // commands need > 37us to settle
 }
 
 /******************************************************************************
@@ -772,11 +772,11 @@ static void LCD_pulseEnable(void)
  *****************************************************************************/
 static void LCD_write4bits(uint8_t value)
 {
-	uint8_t i;
-	for (i = 4; i < 8; i++)
-		LCD_DataPinWrite(i, (value >> (i - 4)) & 0x01);
+    uint8_t i;
+    for (i = 4; i < 8; i++)
+        LCD_DataPinWrite(i, (value >> (i - 4)) & 0x01);
 
-	LCD_pulseEnable();
+    LCD_pulseEnable();
 }
 
 /******************************************************************************
@@ -789,11 +789,11 @@ static void LCD_write4bits(uint8_t value)
  *****************************************************************************/
 static void LCD_write8bits(uint8_t value)
 {
-	uint8_t i;
-	for (i = 0; i < 8; i++)
-		LCD_DataPinWrite(i, (value >> i) & 0x01);
+    uint8_t i;
+    for (i = 0; i < 8; i++)
+        LCD_DataPinWrite(i, (value >> i) & 0x01);
 
-	LCD_pulseEnable();
+    LCD_pulseEnable();
 }
 
 /******************************************************************************
@@ -807,7 +807,7 @@ static void LCD_write8bits(uint8_t value)
  *****************************************************************************/
 static void LCD_Putchar(char c)
 {
-	LCD_write(c);
+    LCD_write(c);
 }
 
 /******************************************************************************
@@ -822,12 +822,12 @@ static void LCD_Putchar(char c)
  *****************************************************************************/
 static void LCD_Putstring(const char *pcBuf, uint8_t ui8Len)
 {
-	uint8_t i;
-	for(i = 0; i < ui8Len; i++)
-	{
-		LCD_Putchar(*pcBuf);
-		pcBuf++;
-	}
+    uint8_t i;
+    for(i = 0; i < ui8Len; i++)
+    {
+        LCD_Putchar(*pcBuf);
+        pcBuf++;
+    }
 }
 
 /* End of lcd.c */
