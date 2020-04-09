@@ -19,11 +19,11 @@
 #define _LED_OFF()              HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET)
 
 /* List of tones. Tone should read only */
-const uint8_t DEFAULT_TONE[] = {0x05};    // ON-OFF periodically
-const uint8_t NOT_SET_TIMEOUT_TONE[] = {0x02, 0x02, 0x02, 0x02, 0x10};
-const uint8_t PRESSURE_OUTRANGE_TONE[] = {0x02, 0x00};
-const uint8_t ELECTRICAL_FAULT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x14};
-const uint8_t HOMING_FAULT_TONE[] = {0x0A};
+const uint8_t DEFAULT_TONE[1] = {0x05};    // ON-OFF periodically
+const uint8_t NOT_SET_TIMEOUT_TONE[5] = {0x02, 0x02, 0x02, 0x02, 0x10};
+const uint8_t PRESSURE_OUTRANGE_TONE[2] = {0x02, 0x00};
+const uint8_t ELECTRICAL_FAULT_TONE[7] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x14};
+const uint8_t HOMING_FAULT_TONE[1] = {0x0A};
 
 /*********************************Variables***********************************/
 static AlarmHandle_t handle;

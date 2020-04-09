@@ -33,6 +33,7 @@ void Task_CheckError(void)
     POT_t* applied_value = POT_GetAppliedValue();
     AlarmHandle_t* alarm_handle = Alarm_GetHandle();
     SensorData_t* sensor_data = Sensor_GetData();
+    uint32_t ui32Status;
 
     /* Status update */
     alarm_handle->status.not_set = ((knob_value->rr != applied_value->rr) ||
@@ -46,29 +47,30 @@ void Task_CheckError(void)
                                       (sensor_data->ris >= CURRENT_THRESHOLD));
     // TODO: Add other errors which may happen in real life
 
-    if (!alarm_handle->enable && alarm_handle->status)
+    ui32Status = *(uint32_t*)&(alarm_handle->status);   // Convert alarm status in unsigned integer representation
+    if (!(alarm_handle->enable) && ui32Status)
     {
         // TODO: setup alarm trigger scheme
         /* Order of below code segment will determine the priority (descending) of the alarm */
         if (alarm_handle->status.high_pressure || alarm_handle->status.low_pressure)
         {
             Alarm_Silence(PRESSURE_OUTRANGE_TIMEOUT);
-            Alarm_SetTone(PRESSURE_OUTRANGE_TONE);
+            Alarm_SetTone(PRESSURE_OUTRANGE_TONE, sizeof(PRESSURE_OUTRANGE_TONE));
         }
         else if (alarm_handle->status.electrical)
         {
             Alarm_Silence(ELECTRICAL_FAULT_TIMEOUT);
-            Alarm_SetTone(ELECTRICAL_FAULT_TONE);
+            Alarm_SetTone(ELECTRICAL_FAULT_TONE, sizeof(ELECTRICAL_FAULT_TONE));
         }
         else if (alarm_handle->status.not_set)
         {
             Alarm_Silence(POT_CHANGE_TIMEOUT);
-            Alarm_SetTone(NOT_SET_TIMEOUT_TONE);
+            Alarm_SetTone(NOT_SET_TIMEOUT_TONE, sizeof(NOT_SET_TIMEOUT_TONE));
         }
         
         Alarm_Enable();
     }
-    else if (!alarm_handle->status && alarm_handle->enable)
+    else if (!ui32Status && (alarm_handle->enable))
     {
         Alarm_Disable();
     }

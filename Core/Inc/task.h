@@ -16,6 +16,7 @@
 #define TASK_H_
 
 #include "main.h"
+#include "states.h"
 
 /*******************************Definitions***********************************/
 
@@ -28,6 +29,7 @@ typedef struct
     uint32_t current_tick[TASK_CAPACITY];   /** Tasks's tick counter */
     uint32_t flag;                          /** Task execution flags */
     uint32_t tick_rate;                     /** Task tick rate (Hz) */
+    SystemState_t sys_state;                /** System state */
 } TaskHandle_t;
 
 /* Task ID and distribution */
@@ -35,12 +37,12 @@ typedef struct
 #define TASK_UPDATE_LCD             1
 #define TASK_READ_POT               2
 #define TASK_ALARM                  3
-#define TASK_CONIRM_BUTTON          4
+#define TASK_CONFIRM_BUTTON         4
 #define TASK_SILENCE_BUTTON         5
 #define TASK_LIMIT_SWITCH           6
 #define TASK_MODE_SWITCH            7
-#define TASK_CHECK_ERROR            30
-#define TASK_READ_TEMP              31
+#define TASK_READ_TEMP              30
+#define TASK_CHECK_ERROR            31
 
 /****************************Function prototypes******************************/
 /* Task management */
@@ -53,6 +55,9 @@ void Task_Execute(void);
 
 /* Task functions */
 void Task_ConfirmButton(void);
+void Task_SilenceButton(void);
+void Task_LimitSwitch(void);
+void Task_SwitchMode(void);
 void Task_UpdateLCD(void);
 void Task_Alarm(void);
 void Task_ReadPOTs(void);

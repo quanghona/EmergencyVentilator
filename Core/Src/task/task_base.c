@@ -20,8 +20,12 @@ static TaskHandle_t handle;
 const void (*TaskList[TASK_CAPACITY])(void) = {
     NULL,
     Task_UpdateLCD,
-    NULL,
+    Task_ReadPOTs,
     Task_Alarm,
+    Task_ConfirmButton,
+    Task_SilenceButton,
+    Task_LimitSwitch,
+    Task_SwitchMode,
     NULL,
     NULL,
     NULL,
@@ -45,11 +49,7 @@ const void (*TaskList[TASK_CAPACITY])(void) = {
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    Task_CheckError
 };
 
 /****************************Function definitions*****************************/
@@ -65,6 +65,7 @@ void Task_Init(uint32_t ui32Rate)
     memset(handle.period, 0, TASK_CAPACITY);
     memset(handle.current_tick, 0, TASK_CAPACITY);
     handle.tick_rate = ui32Rate;
+    handle.sys_state = STARTUP;
 }
 
 /******************************************************************************

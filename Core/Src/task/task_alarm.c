@@ -30,13 +30,13 @@ void Task_Alarm(void)
     {
         handle->tick++;
         /* Reserved for other uncommon cases in future */
-        switch (handle->state)
+        switch (handle->cursor)
         {
             case -1:
                 /* Alarm silence time */
                 if (handle->tick >= handle->silence_time)
                 {
-                    handle->state++;
+                    handle->cursor++;
                     handle->tick = 0;
                     handle->silence_time = 0;
                     Alarm_Toggle();
@@ -46,9 +46,9 @@ void Task_Alarm(void)
 
             default:
                 /* Tone loop here */
-                if (handle->tick >= (uint32_t)(handle->tone[handle->state]))
+                if (handle->tick >= (uint32_t)(handle->tone[handle->cursor]))
                 {
-                    handle->state = (handle->state + 1) % handle->tone_length;
+                    handle->cursor = (handle->cursor + 1) % handle->tone_length;
                     handle->tick = 0;
                     Alarm_Toggle();
                     Alarm_LED_Toggle();
