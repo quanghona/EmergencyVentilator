@@ -22,4 +22,12 @@ void TIM4_delayus(uint16_t ui16Delay)
     TIM4->CR1 &= ~(TIM_CR1_CEN);    // Disable timer
 }
 
+uint32_t strlen(char* s)
+{
+    uint32_t len = 0;
+
+    while (*(s++) != 0) len++;
+    return len;
+}
+
 /* End of support.c */

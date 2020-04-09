@@ -35,6 +35,12 @@ typedef struct
         uint32_t homing_fault : 1;
         uint32_t not_set : 1;
         uint32_t assist_a : 1;
+        uint32_t plateau_exceed_pip : 1;
+        uint32_t peep_exceed_plateau : 1;
+        uint32_t peep_low : 1;
+        uint32_t plateau_high : 1;
+        uint32_t pip_high : 1;
+        uint32_t plateau_low : 1;
     } status;
 } AlarmHandle_t;
 

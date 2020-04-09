@@ -64,7 +64,7 @@ void Task_LimitSwitch(void)
     default:
         break;
     }
-    Button_SetState(SWITCH_LIMIT, NO_EVENT);
+    // Button_SetState(SWITCH_LIMIT, NO_EVENT);
 }
 
 /******************************************************************************
