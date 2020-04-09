@@ -129,7 +129,7 @@ void Task_IncreaseTick(void)
         {
             if (++(handle.current_tick[i]) >= handle.period[i])
             {
-                handle.current_tick[i] = 0;
+                handle.current_tick[i] -= handle.period[i];
                 handle.flag |= mask;
             }
         }

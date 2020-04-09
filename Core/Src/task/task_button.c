@@ -17,6 +17,10 @@
 
 /****************************Function definitions*****************************/
 
+/******************************************************************************
+ * @brief Task that manage the actions of the confirm button
+ * 
+*****************************************************************************/
 void Task_ConfirmButton(void)
 {
     if (Button_GetState(BUTTON_CONFIRM) != NO_EVENT)
@@ -27,6 +31,10 @@ void Task_ConfirmButton(void)
     }
 }
 
+/******************************************************************************
+ * @brief Task that manage the actions of the silence button
+ * 
+*****************************************************************************/
 void Task_SilenceButton(void)
 {
     if (Button_GetState(BUTTON_SILENCE) != NO_EVENT)
@@ -36,6 +44,10 @@ void Task_SilenceButton(void)
     }
 }
 
+/******************************************************************************
+ * @brief Task that manage the actions of the state transition of the Limit switch
+ * 
+*****************************************************************************/
 void Task_LimitSwitch(void)
 {
     // TODO: replace stop motor procedure
@@ -55,6 +67,10 @@ void Task_LimitSwitch(void)
     Button_SetState(SWITCH_LIMIT, NO_EVENT);
 }
 
+/******************************************************************************
+ * @brief Task that handle the switching mode actions
+ * 
+*****************************************************************************/
 void Task_SwitchMode(void)
 {
     /* TODO: define switch mode setup operation */

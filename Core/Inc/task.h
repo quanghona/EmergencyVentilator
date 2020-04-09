@@ -56,6 +56,7 @@ void Task_ConfirmButton(void);
 void Task_UpdateLCD(void);
 void Task_Alarm(void);
 void Task_ReadPOTs(void);
+void Task_CheckError(void);
 
 /*****************************************************************************/
 

@@ -14,6 +14,14 @@
 
 /****************************Function definitions*****************************/
 
+/******************************************************************************
+ * @brief Handles the alarm states and timing of the tone
+ * @details This task manage the ON/OFF state of the alarm. And with the given
+ * frequency, it also take care of the timing of the tone assigned in the alarm
+ * handle
+ * 
+ * @see AlarmHandle_t
+*****************************************************************************/
 void Task_Alarm(void)
 {
     AlarmHandle_t* handle = Alarm_GetHandle();
@@ -32,6 +40,7 @@ void Task_Alarm(void)
                     handle->tick = 0;
                     handle->silence_time = 0;
                     Alarm_Toggle();
+                    Alarm_LED_Toggle();
                 }
                 break;
 
@@ -42,6 +51,7 @@ void Task_Alarm(void)
                     handle->state = (handle->state + 1) % handle->tone_length;
                     handle->tick = 0;
                     Alarm_Toggle();
+                    Alarm_LED_Toggle();
                 }
                 break;
         }
