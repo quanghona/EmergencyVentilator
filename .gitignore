@@ -8,5 +8,5 @@ pinout/*
 pinout.xlsx
 
 #  Other tools
-*.python
+*.py
 *.sh
