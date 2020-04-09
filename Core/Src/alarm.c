@@ -13,8 +13,10 @@
 #include "main.h"
 
 /*******************************Definitions***********************************/
-#define _Alarm_TOGGLE()          HAL_GPIO_TogglePin(ALARM_GPIO_Port, ALARM_Pin)
-#define _Alarm_OFF()             HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, GPIO_PIN_RESET)
+#define _Alarm_TOGGLE()         HAL_GPIO_TogglePin(ALARM_GPIO_Port, ALARM_Pin)
+#define _Alarm_OFF()            HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, GPIO_PIN_RESET)
+#define _LED_TOGGLE()           HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin)
+#define _LED_OFF()              HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET)
 
 /* List of tones. Tone should read only */
 const uint8_t DEFAULT_TONE[] = {0x05};    // ON-OFF periodically
@@ -77,6 +79,7 @@ void Alarm_Silence(float f32Time)
     handle.tick = 0;
     handle.cursor = -1;
     _Alarm_OFF();
+    _LED_OFF();
 }
 
 /******************************************************************************
@@ -90,6 +93,7 @@ void Alarm_Disable()
     handle.tick = 0;
     handle.cursor = -1;
     _Alarm_OFF();
+    _LED_OFF();
 }
 
 /******************************************************************************
@@ -121,6 +125,24 @@ inline void Alarm_Toggle()
 inline void Alarm_Off()
 {
     _Alarm_OFF();
+}
+
+/******************************************************************************
+ * @brief Toggle led state
+ * 
+*****************************************************************************/
+inline void Alarm_LED_Toggle()
+{
+    _LED_TOGGLE();
+}
+
+/******************************************************************************
+ * @brief Turn LED off
+ * 
+*****************************************************************************/
+inline void Alarm_LED_Off()
+{
+    _LED_OFF();
 }
 
 /* End of alarm.c */

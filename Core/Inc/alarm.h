@@ -55,6 +55,8 @@ void Alarm_SetTone(const uint8_t* pui8Tone, uint32_t ui32Len);
 
 void Alarm_Toggle();
 void Alarm_Off();
+void Alarm_LED_Toggle();
+void Alarm_LED_Off();
 
 /*****************************************************************************/
 #endif /* ALARM_H_ */
