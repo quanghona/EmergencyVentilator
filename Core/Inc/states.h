@@ -21,7 +21,9 @@ typedef enum
     POSTHOME,
     SET_VALUE,
     INHALE,
-    EXHALE
+    INHALE_PAUSE,
+    EXHALE,
+    EXHALE_PAUSE
 } SystemState_t;
 
 #endif /* STATES_H_ */

@@ -134,6 +134,7 @@ void Error_Handler(void);
 #define SILENCE_TIMEOUT             600.0
 #define PRESSURE_OUTRANGE_TIMEOUT   0.1
 #define ELECTRICAL_FAULT_TIMEOUT    0.1
+#define HOMING_FAULT_TIMEOUT        0.1
 #define POT_CHANGE_TIMEOUT          50.0
 /* USER CODE END Private defines */
 
