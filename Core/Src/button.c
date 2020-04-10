@@ -36,7 +36,7 @@ ButtonEvent_e Button_GetEvent(Button_e button)
  * @param button button to set the event
  * @param event event value
 *****************************************************************************/
-void Button_SetState(Button_e button, ButtonEvent_e event)
+void Button_SetEvent(Button_e button, ButtonEvent_e event)
 {
     if (event < MAX_EVENT)
         _event[button] = event;

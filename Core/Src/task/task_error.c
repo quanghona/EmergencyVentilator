@@ -16,6 +16,8 @@
 #include "pots.h"
 #include "alarm.h"
 #include "button.h"
+#include "support.h"
+#include "lcd.h"
 
 /*******************************Definitions***********************************/
 const float HIGH_PRESSURE = 40;     /* Unit: cmH20 */
@@ -56,7 +58,6 @@ void Task_CheckError(void)
     AlarmHandle_t* alarm_handle = Alarm_GetHandle();
     SensorData_t* sensor_data = Sensor_GetData();
     TaskHandle_t* task_handle = Task_GetHandleInstance();
-    uint32_t ui32Status;
 
     /* Status update */
     alarm_handle->status.not_set = ((knob_value->rr != applied_value->rr) ||
@@ -75,12 +76,11 @@ void Task_CheckError(void)
     alarm_handle->status.pip_high = sensor_data->pip > PIP_HIGH_PRESSURE;
     alarm_handle->status.plateau_low = sensor_data->plateau < PLATEAU_LOW_PRESSURE;
     alarm_handle->status.homing_fault = (task_handle->sys_state > POSTHOME) &&
-                                        Button_GetState(SWITCH_LIMIT) != LOW_LEVEL;
+                                        Button_GetEvent(SWITCH_LIMIT) != LOW_LEVEL;
     //TODO: add home switch not touching when homing case
     // TODO: Add other errors which may happen in real life
 
-    ui32Status = *(uint32_t*)&(alarm_handle->status);   // Convert alarm status in unsigned integer representation
-    if (!(alarm_handle->enable) && ui32Status)
+    if (!(alarm_handle->enable) && alarm_handle->status.ui32Status)
     {
         // TODO: setup alarm trigger scheme
         /* Order of below code segment will determine the priority (descending) of the alarm */
@@ -153,7 +153,7 @@ void Task_CheckError(void)
         
         Alarm_Enable();
     }
-    else if (!ui32Status && (alarm_handle->enable))
+    else if (!(alarm_handle->status.ui32Status) && (alarm_handle->enable))
     {
         Alarm_Disable();
         LCD_SetMessage(MESSAGE_EMPTY);

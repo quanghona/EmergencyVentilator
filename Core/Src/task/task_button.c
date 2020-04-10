@@ -23,9 +23,9 @@
 *****************************************************************************/
 void Task_ConfirmButton(void)
 {
-    if (Button_GetState(BUTTON_CONFIRM) != NO_EVENT)
+    if (Button_GetEvent(BUTTON_CONFIRM) != NO_EVENT)
     {
-        Button_SetState(BUTTON_CONFIRM, NO_EVENT);
+        Button_SetEvent(BUTTON_CONFIRM, NO_EVENT);
         POT_ApplyValue();
         Alarm_Disable();
     }
@@ -37,9 +37,9 @@ void Task_ConfirmButton(void)
 *****************************************************************************/
 void Task_SilenceButton(void)
 {
-    if (Button_GetState(BUTTON_SILENCE) != NO_EVENT)
+    if (Button_GetEvent(BUTTON_SILENCE) != NO_EVENT)
     {
-        Button_SetState(BUTTON_SILENCE, NO_EVENT);
+        Button_SetEvent(BUTTON_SILENCE, NO_EVENT);
         Alarm_Silence(SILENCE_TIMEOUT);
     }
 }
@@ -51,7 +51,7 @@ void Task_SilenceButton(void)
 void Task_LimitSwitch(void)
 {
     // TODO: replace stop motor procedure
-    switch (Button_GetState(SWITCH_LIMIT))
+    switch (Button_GetEvent(SWITCH_LIMIT))
     {
     case LOW_LEVEL:
         
@@ -64,7 +64,7 @@ void Task_LimitSwitch(void)
     default:
         break;
     }
-    // Button_SetState(SWITCH_LIMIT, NO_EVENT);
+    // Button_SetEvent(SWITCH_LIMIT, NO_EVENT);
 }
 
 /******************************************************************************
@@ -74,7 +74,7 @@ void Task_LimitSwitch(void)
 void Task_SwitchMode(void)
 {
     /* TODO: define switch mode setup operation */
-    switch (Button_GetState(SWITCH_MODE_SELECTION))
+    switch (Button_GetEvent(SWITCH_MODE_SELECTION))
     {
     case LOW_LEVEL:
         
@@ -87,7 +87,7 @@ void Task_SwitchMode(void)
     default:
         break;
     }
-    Button_SetState(SWITCH_MODE_SELECTION, NO_EVENT);
+    Button_SetEvent(SWITCH_MODE_SELECTION, NO_EVENT);
 }
 
 /* End of task_button.c */

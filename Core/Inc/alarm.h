@@ -26,21 +26,25 @@ typedef struct
     uint32_t silence_time;      /** Silence time, tick based */
     uint32_t tick;              /** Tick counter, use for timing in task */
     int cursor;                 /** A cursor for playing tone. -1 if under silent time */
-    struct AlarmStatus               /** Alarm status bits. For managing the various error type status */
+    union AlarmStatus_u         /** Alarm status bits. For managing the various error type status */
     {
-        uint32_t high_pressure : 1;
-        uint32_t low_pressure : 1;
-        uint32_t electrical : 1;
-        uint32_t position_error : 1;
-        uint32_t homing_fault : 1;
-        uint32_t not_set : 1;
-        uint32_t assist_a : 1;
-        uint32_t plateau_exceed_pip : 1;
-        uint32_t peep_exceed_plateau : 1;
-        uint32_t peep_low : 1;
-        uint32_t plateau_high : 1;
-        uint32_t pip_high : 1;
-        uint32_t plateau_low : 1;
+        struct
+        {
+            uint32_t high_pressure : 1;
+            uint32_t low_pressure : 1;
+            uint32_t electrical : 1;
+            uint32_t position_error : 1;
+            uint32_t homing_fault : 1;
+            uint32_t not_set : 1;
+            uint32_t assist_a : 1;
+            uint32_t plateau_exceed_pip : 1;
+            uint32_t peep_exceed_plateau : 1;
+            uint32_t peep_low : 1;
+            uint32_t plateau_high : 1;
+            uint32_t pip_high : 1;
+            uint32_t plateau_low : 1;
+        };
+        uint32_t ui32Status;
     } status;
 } AlarmHandle_t;
 

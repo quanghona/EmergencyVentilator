@@ -11,24 +11,23 @@
 */
 
 #include "task.h"
+#include <string.h>
 
 /*********************************Variables***********************************/
 static TaskHandle_t handle;
 
 /* Setup fixed order task list for simplification */
 // TODO: define task list
-const void (*TaskList[TASK_CAPACITY])(void) = {
+typedef void (*Task_t)();
+static const Task_t TaskList[TASK_CAPACITY] = {
     NULL,
-    Task_UpdateLCD,
-    Task_ReadPOTs,
-    Task_Alarm,
-    Task_ConfirmButton,
-    Task_SilenceButton,
-    Task_LimitSwitch,
-    Task_SwitchMode,
-    NULL,
-    NULL,
-    NULL,
+    &Task_UpdateLCD,
+    &Task_ReadPOTs,
+    &Task_Alarm,
+    &Task_ConfirmButton,
+    &Task_SilenceButton,
+    &Task_LimitSwitch,
+    &Task_SwitchMode,
     NULL,
     NULL,
     NULL,
@@ -49,7 +48,10 @@ const void (*TaskList[TASK_CAPACITY])(void) = {
     NULL,
     NULL,
     NULL,
-    Task_CheckError
+    NULL,
+    NULL,
+    NULL,
+    &Task_CheckError
 };
 
 /****************************Function definitions*****************************/

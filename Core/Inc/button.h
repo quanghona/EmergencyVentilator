@@ -35,8 +35,8 @@ typedef enum
 } ButtonEvent_e;
 
 /****************************Function prototypes******************************/
-ButtonEvent_e Button_GetState(Button_e button);
-void Button_SetState(Button_e button, ButtonEvent_e event);
+ButtonEvent_e Button_GetEvent(Button_e button);
+void Button_SetEvent(Button_e button, ButtonEvent_e event);
 
 /*****************************************************************************/
 #endif /* BUTTON_H_ */
