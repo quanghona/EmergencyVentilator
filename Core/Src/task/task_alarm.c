@@ -48,10 +48,17 @@ void Task_Alarm(void)
                 /* Tone loop here */
                 if (handle->tick >= (uint32_t)(handle->tone[handle->cursor]))
                 {
-                    handle->cursor = (handle->cursor + 1) % handle->tone_length;
+                    handle->cursor = (handle->cursor + 1) % strlen(handle->tone);
                     handle->tick = 0;
-                    Alarm_Toggle();
                     Alarm_LED_Toggle();
+                    if (handle->silence_time == 0)
+                    {
+                        Alarm_SynchronizeWithLED();
+                    }
+                    else if (handle->silence_time < 0)
+                    {
+                        handle->silence_time++;
+                    }
                 }
                 break;
         }

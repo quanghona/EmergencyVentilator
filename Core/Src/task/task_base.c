@@ -11,7 +11,7 @@
 */
 
 #include "task.h"
-#include <string.h>
+#include "support.h"
 
 /*********************************Variables***********************************/
 static TaskHandle_t handle;
@@ -28,7 +28,7 @@ static const Task_t TaskList[TASK_CAPACITY] = {
     &Task_SilenceButton,
     &Task_LimitSwitch,
     &Task_SwitchMode,
-    NULL,
+    &Task_DisplayMessage,
     NULL,
     NULL,
     NULL,

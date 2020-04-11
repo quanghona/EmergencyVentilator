@@ -20,7 +20,7 @@
 
 /*******************************Definitions***********************************/
 
-#define TASK_CAPACITY 32
+#define TASK_CAPACITY               32
 
 typedef struct
 {
@@ -41,6 +41,7 @@ typedef struct
 #define TASK_SILENCE_BUTTON         5
 #define TASK_LIMIT_SWITCH           6
 #define TASK_MODE_SWITCH            7
+#define TASK_DISPLAY_MESSAGE        8
 #define TASK_READ_TEMP              30
 #define TASK_CHECK_ERROR            31
 
@@ -62,6 +63,11 @@ void Task_UpdateLCD(void);
 void Task_Alarm(void);
 void Task_ReadPOTs(void);
 void Task_CheckError(void);
+void Task_DisplayMessage(void);
+
+/* Other functions */
+bool LCD_AddMessage(const char* pi8Message);
+bool LCD_RemoveMessage(const char* pi8Message);
 
 /*****************************************************************************/
 

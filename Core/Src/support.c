@@ -41,4 +41,27 @@ uint32_t strlen(char* s)
     return len;
 }
 
+/******************************************************************************
+ * @brief Mimic memset function with type uint32_t
+ * 
+ * @param arr source array
+ * @param val value to be set
+ * @param len number of member of the array
+*****************************************************************************/
+void memset(uint32_t* arr, uint32_t val, uint32_t len)
+{
+    while ((len--) > 0) *(arr++) = val;
+}
+
+/******************************************************************************
+ * @brief Return absolute value
+ * 
+ * @param val value
+ * @return int32_t absolute value
+*****************************************************************************/
+int32_t abs(int32_t val)
+{
+    return val < 0 ? -val : val;
+}
+
 /* End of support.c */
