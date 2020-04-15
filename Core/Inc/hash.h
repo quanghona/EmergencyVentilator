@@ -15,6 +15,7 @@
 #include "main.h"
 
 /*******************************Definitions***********************************/
+
 #define MAX_TABLE_SIZE                  31   // Should choose prime numbe for better hashing
 
 /** Hash data type, support 8-bit constant array */
@@ -26,7 +27,7 @@ typedef struct
 } Hash_t;
 
 /****************************Function prototypes******************************/
-uint32_t Hash_function(const uint8_t* pdata);
+
 bool Hash_Add(Hash_t* hash, const uint8_t* pdata);
 bool Hash_Remove(Hash_t* hash, const uint8_t* pdata);
 int Hash_Search(Hash_t* hash, const uint8_t* pdata);

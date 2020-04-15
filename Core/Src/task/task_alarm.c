@@ -50,7 +50,7 @@ void Task_Alarm(void)
                 {
                     handle->cursor = (handle->cursor + 1) % strlen(handle->tone);
                     handle->tick = 0;
-                    Alarm_LED_Toggle();
+                    Alarm_LED_Write(!(handle->cursor % 2));
                     if (handle->silence_time == 0)
                     {
                         Alarm_SynchronizeWithLED();

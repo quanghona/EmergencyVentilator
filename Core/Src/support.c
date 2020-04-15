@@ -33,13 +33,13 @@ void TIM4_delayus(uint16_t ui16Delay)
  * @param s pointer to string
  * @return uint32_t length of the string
 *****************************************************************************/
-uint32_t strlen(char* s)
-{
-    uint32_t len = 0;
+// uint32_t strlen(char* s)
+// {
+//     uint32_t len = 0;
 
-    while (*(s++) != 0) len++;
-    return len;
-}
+//     while (*(s++) != 0) len++;
+//     return len;
+// }
 
 /******************************************************************************
  * @brief Mimic memset function with type uint32_t
@@ -48,10 +48,10 @@ uint32_t strlen(char* s)
  * @param val value to be set
  * @param len number of member of the array
 *****************************************************************************/
-void memset(uint32_t* arr, uint32_t val, uint32_t len)
-{
-    while ((len--) > 0) *(arr++) = val;
-}
+// void memset(uint32_t* arr, uint32_t val, uint32_t len)
+// {
+//     while ((len--) > 0) *(arr++) = val;
+// }
 
 /******************************************************************************
  * @brief Return absolute value

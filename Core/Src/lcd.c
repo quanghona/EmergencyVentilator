@@ -55,7 +55,7 @@ static uint8_t _displayfunction;
 static uint8_t _displaycontrol;
 static uint8_t _displaymode;
 // static const uint8_t const _Row_Offsets[2] = {0x00, 0x40};	//LCD 16x2 or LCD 20x2
-static const uint8_t _Row_Offsets[4] = {0x00, 0x40, 0x10, 0x50}; //LCD 16x4 or LCD 20x4
+static const uint8_t _Row_Offsets[4] = {0x00, 0x40, 0x14, 0x54}; //LCD 20x4
 
 static const char * const g_pcHex = "0123456789abcdef";
 

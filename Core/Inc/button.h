@@ -35,6 +35,7 @@ typedef enum
 } ButtonEvent_e;
 
 /****************************Function prototypes******************************/
+
 ButtonEvent_e Button_GetEvent(Button_e button);
 void Button_SetEvent(Button_e button, ButtonEvent_e event);
 

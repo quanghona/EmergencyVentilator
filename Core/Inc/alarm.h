@@ -70,6 +70,7 @@ void Alarm_Toggle();
 void Alarm_Off();
 void Alarm_LED_Toggle();
 void Alarm_LED_Off();
+void Alarm_LED_Write(bool bOn);
 
 /*****************************************************************************/
 #endif /* ALARM_H_ */

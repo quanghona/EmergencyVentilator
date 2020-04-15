@@ -16,6 +16,7 @@
 #include "sensor.h"
 #include "support.h"
 #include "hash.h"
+#include <string.h>
 
 /*********************************Variables***********************************/
 static Hash_t hmessages;

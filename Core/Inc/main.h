@@ -92,12 +92,12 @@ void Error_Handler(void);
 #define IE_GPIO_Port GPIOB
 #define THRESHOLD_Pin GPIO_PIN_1
 #define THRESHOLD_GPIO_Port GPIOB
-#define MOTOR_N_Pin GPIO_PIN_9
-#define MOTOR_N_GPIO_Port GPIOA
 #define LCD_RW_Pin GPIO_PIN_6
 #define LCD_RW_GPIO_Port GPIOC
 #define MOTOR_P_Pin GPIO_PIN_8
 #define MOTOR_P_GPIO_Port GPIOA
+#define MOTOR_N_Pin GPIO_PIN_9
+#define MOTOR_N_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_12
 #define LED_GPIO_Port GPIOC
 #define MOTOR_ENABLE_Pin GPIO_PIN_2
@@ -125,7 +125,7 @@ void Error_Handler(void);
 
 /* Task */
 #define TASK_ALARM_FREQUENCY                    10
-#define TASK_LCD_FREQUENCY                      21
+#define TASK_LCD_FREQUENCY                      5
 #define TASK_READ_POT_FREQUENCY                 40
 #define TASK_BUTTON_FREQUENCY                   20
 #define TASK_CHECK_ERROR_FREQUENCY              20

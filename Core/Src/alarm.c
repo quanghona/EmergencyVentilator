@@ -19,14 +19,15 @@
 #define _Alarm_OFF()            HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, GPIO_PIN_RESET)
 #define _LED_TOGGLE()           HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin)
 #define _LED_OFF()              HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET)
+#define _LED_WRITE(State)       HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, !State)
 #define _Alarm_Synchronize()    HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, !HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin))
 
 /* List of tones. Tone should read only, need to add 0x00 at the end of the array to indicate end of tone sequence */
-const uint8_t const DEFAULT_TONE[] = {0x05, 0x00};    // ON-OFF periodically
-const uint8_t const NOT_SET_TIMEOUT_TONE[] = {0x02, 0x02, 0x02, 0x02, 0x10, 0x00};
-const uint8_t const PRESSURE_OUTRANGE_TONE[] = {0x02, 0x00};
-const uint8_t const ELECTRICAL_FAULT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x14, 0x00};
-const uint8_t const HOMING_FAULT_TONE[] = {0x0A, 0x00};
+const uint8_t const DEFAULT_TONE[] = {0x05, 0x05, 0x00};    // ON-OFF periodically
+const uint8_t const NOT_SET_TIMEOUT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x14, 0x00};
+const uint8_t const PRESSURE_OUTRANGE_TONE[] = {0x02, 0x02, 0x00};
+const uint8_t const ELECTRICAL_FAULT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x0B, 0x02, 0x00};
+const uint8_t const HOMING_FAULT_TONE[] = {0x0A, 0x0A, 0x00};
 
 /*********************************Variables***********************************/
 static AlarmHandle_t handle;
@@ -49,8 +50,8 @@ void Alarm_Init(uint32_t ui32TickRate)
 {
     handle.tick_rate = ui32TickRate;
     handle.cursor = -1;
-    handle.tone = DEFAULT_TONE;
     handle.enable = false;
+    handle.silence_time = 0;
     SILENCE_TIMEOUT_TICK = ui32TickRate * SILENCE_TIMEOUT;
 }
 
@@ -175,6 +176,9 @@ bool Alarm_RemoveTone(const uint8_t* pui8Tone)
             }
             while (htones.table[htones.current_index] == NULL);
             Alarm_SetTone(htones.table[htones.current_index]);
+            handle.cursor = 0;
+            handle.tick = 0;
+            _LED_OFF();
         }
         return true;
     }
@@ -227,6 +231,16 @@ inline void Alarm_LED_Toggle()
 inline void Alarm_LED_Off()
 {
     _LED_OFF();
+}
+
+/******************************************************************************
+ * @brief Write LED state
+ * 
+ * @param bOn is LED ON
+*****************************************************************************/
+void Alarm_LED_Write(bool bOn)
+{
+    _LED_WRITE(bOn);
 }
 
 /* End of alarm.c */

@@ -32,8 +32,8 @@ extern const char const MESSAGE_PLATEAU_LOW[];
 
 /****************************Function prototypes******************************/
 void TIM4_delayus(uint16_t ui16Delay);
-uint32_t strlen(char* s);
-void memset(uint32_t* arr, uint32_t val, uint32_t len);
+// uint32_t strlen(char* s);
+// void memset(uint32_t* arr, uint32_t val, uint32_t len);
 int32_t abs(int32_t val);
 
 /*****************************************************************************/

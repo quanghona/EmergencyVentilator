@@ -11,6 +11,11 @@
 
 #include "hash.h"
 
+/*************************Private function prototypes*************************/
+
+static uint32_t Hash_function(const uint8_t* pdata);
+static uint32_t Hash_CollisionResolution(uint32_t hash_val);
+
 /****************************Function definitions*****************************/
 
 /******************************************************************************
@@ -19,9 +24,20 @@
  * @param pdata pointer to data
  * @return uint32_t hash value
 *****************************************************************************/
-uint32_t Hash_function(const uint8_t* pdata)
+static inline uint32_t Hash_function(const uint8_t* pdata)
 {
     return (uint32_t)pdata % MAX_TABLE_SIZE;    // Modulo hashing
+}
+
+/******************************************************************************
+ * @brief Collision resolution function
+ * 
+ * @param hash_val hash value
+ * @return uint32_t new value
+*****************************************************************************/
+static inline uint32_t Hash_CollisionResolution(uint32_t hash_val)
+{
+    return (hash_val + 10) % MAX_TABLE_SIZE;    // Use linear probing
 }
 
 /******************************************************************************
@@ -41,12 +57,12 @@ bool Hash_Add(Hash_t* hash, const uint8_t* pdata)
     /* Perform hashing */
     hash_value = Hash_function(pdata);
 
-    /* Colisions resolution, use linear probing */
+    /* Collisions resolution */
     while (hash->table[hash_value] != NULL)
     {
         if (hash->table[hash_value] != pdata)
         {
-            hash_value = (hash_value + 10) % MAX_TABLE_SIZE;
+            hash_value = Hash_CollisionResolution(hash_value);
         }
         else
         {
@@ -109,8 +125,8 @@ int Hash_Search(Hash_t* hash, const uint8_t* pdata)
         }
         else
         {
-            /* Resolve colisions, use linear probing */
-            traversal_index = (traversal_index + 10) % MAX_TABLE_SIZE;
+            /* Resolve collisions */
+            traversal_index = Hash_CollisionResolution(traversal_index);
         }
     } while (traversal_index != hash_value);
 

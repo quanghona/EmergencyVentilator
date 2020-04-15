@@ -20,6 +20,7 @@
 #include "lcd.h"
 
 /*******************************Definitions***********************************/
+
 struct ErrorResolvingData
 {
     uint32_t mask;

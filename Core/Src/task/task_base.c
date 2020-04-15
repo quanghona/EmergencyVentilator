@@ -12,6 +12,7 @@
 
 #include "task.h"
 #include "support.h"
+#include <string.h>
 
 /*********************************Variables***********************************/
 static TaskHandle_t handle;
