@@ -13,6 +13,7 @@
 #include "main.h"
 #include "support.h"
 #include "hash.h"
+#include "constants.h"
 
 /*******************************Definitions***********************************/
 #define _Alarm_TOGGLE()         HAL_GPIO_TogglePin(ALARM_GPIO_Port, ALARM_Pin)
@@ -21,13 +22,6 @@
 #define _LED_OFF()              HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET)
 #define _LED_WRITE(State)       HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, !State)
 #define _Alarm_Synchronize()    HAL_GPIO_WritePin(ALARM_GPIO_Port, ALARM_Pin, !HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin))
-
-/* List of tones. Tone should read only, need to add 0x00 at the end of the array to indicate end of tone sequence */
-const uint8_t const DEFAULT_TONE[] = {0x05, 0x05, 0x00};    // ON-OFF periodically
-const uint8_t const NOT_SET_TIMEOUT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x14, 0x00};
-const uint8_t const PRESSURE_OUTRANGE_TONE[] = {0x02, 0x02, 0x00};
-const uint8_t const ELECTRICAL_FAULT_TONE[] = {0x01, 0x01, 0x01, 0x01, 0x0B, 0x02, 0x00};
-const uint8_t const HOMING_FAULT_TONE[] = {0x0A, 0x0A, 0x00};
 
 /*********************************Variables***********************************/
 static AlarmHandle_t handle;

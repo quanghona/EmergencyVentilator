@@ -49,13 +49,6 @@ typedef struct
     } status;
 } AlarmHandle_t;
 
-/* List of tone */
-extern const uint8_t const DEFAULT_TONE[];
-extern const uint8_t const NOT_SET_TIMEOUT_TONE[];
-extern const uint8_t const PRESSURE_OUTRANGE_TONE[];
-extern const uint8_t const ELECTRICAL_FAULT_TONE[];
-extern const uint8_t const HOMING_FAULT_TONE[];
-
 /****************************Function prototypes******************************/
 void Alarm_Init(uint32_t ui32TickRate);
 AlarmHandle_t* Alarm_GetHandle();

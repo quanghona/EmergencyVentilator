@@ -16,6 +16,7 @@
 #include "sensor.h"
 #include "support.h"
 #include "hash.h"
+#include "constants.h"
 #include <string.h>
 
 /*********************************Variables***********************************/

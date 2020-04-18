@@ -123,20 +123,6 @@ void Error_Handler(void);
 
 #define SYSTICK_FREQUENCY                       1000
 
-/* Task */
-#define TASK_ALARM_FREQUENCY                    10
-#define TASK_LCD_FREQUENCY                      5
-#define TASK_READ_POT_FREQUENCY                 40
-#define TASK_BUTTON_FREQUENCY                   20
-#define TASK_CHECK_ERROR_FREQUENCY              20
-#define TASK_DISPLAY_MESSAGE_FREQUENCY          1
-
-/* Timeout. Unit: tick of Task alarm */
-#define SILENCE_TIMEOUT                         600.0
-#define PRESSURE_OUTRANGE_TIMEOUT               0.0
-#define ELECTRICAL_FAULT_TIMEOUT                0.0
-#define HOMING_FAULT_TIMEOUT                    0.0
-#define POT_CHANGE_TIMEOUT                      50.0
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

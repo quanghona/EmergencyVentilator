@@ -13,17 +13,27 @@
 #ifndef STATES_H_
 #define STATES_H_
 
+#include "main.h"
+
+/*******************************Definitions***********************************/
+
 typedef enum
 {
     STARTUP,
     PREHOME,
     HOMING,
     POSTHOME,
-    SET_VALUE,
     INHALE,
     INHALE_PAUSE,
     EXHALE,
     EXHALE_PAUSE
 } SystemState_t;
+
+/****************************Function prototypes******************************/
+
+void State_Transition(SystemState_t* pssCurrent);
+bool State_CheckTransition(SystemState_t ssCurrent);
+
+/*****************************************************************************/
 
 #endif /* STATES_H_ */

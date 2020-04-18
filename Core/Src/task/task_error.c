@@ -16,7 +16,7 @@
 #include "pots.h"
 #include "alarm.h"
 #include "button.h"
-#include "support.h"
+#include "constants.h"
 #include "lcd.h"
 
 /*******************************Definitions***********************************/
@@ -29,20 +29,19 @@ struct ErrorResolvingData
     const char* message;
 };
 
-const float HIGH_PRESSURE = 40;     /* Unit: cmH20 */
-const float LOW_PRESSURE = 5;       /* Unit: cmH20 */
-const float CURRENT_THRESHOLD = 15; /* Unit: A */
-const float PEEP_LOW_PRESSURE = 0;  //TODO: TBD
-const float PLATEAU_HIGH_PRESSURE = 30;
-const float PIP_HIGH_PRESSURE = 40;
-const float PLATEAU_LOW_PRESSURE = 5;
-
 // Please refer to the order of the alarm status bits in the alarm handle structure to define the mask value
 static const struct ErrorResolvingData ERD[] = {
-    {.mask = 0x000000FF, .timeout = POT_CHANGE_TIMEOUT, .tone = NOT_SET_TIMEOUT_TONE, .message = MESSAGE_NOT_SET},
-    {.mask = 0x00000100, .timeout = ELECTRICAL_FAULT_TIMEOUT, .tone = ELECTRICAL_FAULT_TONE, .message = MESSAGE_ELECTRICAL_FAULT},
-    {.mask = 0x00000400, .timeout = HOMING_FAULT_TIMEOUT, .tone = HOMING_FAULT_TONE, .message = MESSAGE_HOMING_FAULT},
-    {.mask = 0x00000800, .timeout = POT_CHANGE_TIMEOUT, .tone = NOT_SET_TIMEOUT_TONE, .message = MESSAGE_NOT_SET}
+    {.mask = 0x00000001, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_HIGH_PRESSURE},
+    {.mask = 0x00000002, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_LOW_PRESSURE},
+    {.mask = 0x00000004, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PLATEAU_EXCEED_PIP},
+    {.mask = 0x00000008, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PEEP_EXCEED_PLATEAU},
+    {.mask = 0x00000010, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PEEP_LOW},
+    {.mask = 0x00000020, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PLATEAU_HIGH},
+    {.mask = 0x00000040, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PIP_HIGH},
+    {.mask = 0x00000080, .timeout = PRESSURE_OUTRANGE_TIMEOUT, .tone = TONE_PRESSURE_OUTRANGE, .message = MESSAGE_PLATEAU_LOW},
+    {.mask = 0x00000100, .timeout = ELECTRICAL_FAULT_TIMEOUT, .tone = TONE_ELECTRICAL_FAULT, .message = MESSAGE_ELECTRICAL_FAULT},
+    {.mask = 0x00000400, .timeout = HOMING_FAULT_TIMEOUT, .tone = TONE_HOMING_FAULT, .message = MESSAGE_HOMING_FAULT},
+    {.mask = 0x00000800, .timeout = POT_CHANGE_TIMEOUT, .tone = TONE_NOT_SET_TIMEOUT, .message = MESSAGE_NOT_SET}
 };
 static const int ERD_SIZE = sizeof(ERD) / sizeof(ERD[0]);   // precalculate to save resources
 
@@ -79,7 +78,7 @@ void Task_CheckError(void)
     alarm_handle->status.plateau_high = sensor_data->plateau > PLATEAU_HIGH_PRESSURE;
     alarm_handle->status.pip_high = sensor_data->pip > PIP_HIGH_PRESSURE;
     alarm_handle->status.plateau_low = sensor_data->plateau < PLATEAU_LOW_PRESSURE;
-    alarm_handle->status.homing_fault = (task_handle->sys_state > POSTHOME) &&
+    alarm_handle->status.homing_fault = (task_handle->sys_state > HOMING) &&
                                         Button_GetEvent(SWITCH_LIMIT) != LOW_LEVEL;
     //TODO: add home switch not touching when homing case
     // TODO: Add other errors which may happen in real life
@@ -96,9 +95,14 @@ void Task_CheckError(void)
             Alarm_AddTone(ERD[i].tone);
             LCD_AddMessage(ERD[i].message);
         }
-        else if ((status_falling & ERD[i].mask) == 0)
+        else if (status_falling & ERD[i].mask)
         {
-            Alarm_RemoveTone(ERD[i].tone);
+            // This is a hack, with the pressure alarm, only disable these alarm when all pressure is in normal condition
+            // TODO: Need more safe approach in the future
+            if (((ERD[i].mask & 0x000000FF) == 0) || (ERD[i].mask > 0x000000FF))
+            {
+                Alarm_RemoveTone(ERD[i].tone);
+            }
             LCD_RemoveMessage(ERD[i].message);
         }
     }
