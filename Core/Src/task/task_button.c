@@ -14,6 +14,7 @@
 #include "button.h"
 #include "alarm.h"
 #include "pots.h"
+#include "constants.h"
 
 /****************************Function definitions*****************************/
 

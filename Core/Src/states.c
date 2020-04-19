@@ -14,6 +14,7 @@
 #include "constants.h"
 #include "button.h"
 #include "task.h"
+#include "lcd.h"
 
 /****************************Function definitions*****************************/
 

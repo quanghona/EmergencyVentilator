@@ -12,6 +12,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+#include "main.h"
+
 /*******************************Definitions***********************************/
 
 /* Task */
