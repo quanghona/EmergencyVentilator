@@ -15,6 +15,7 @@
 #include "button.h"
 #include "task.h"
 #include "lcd.h"
+#include "alarm.h"
 
 /****************************Function definitions*****************************/
 

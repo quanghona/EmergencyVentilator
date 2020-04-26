@@ -94,6 +94,9 @@ void Error_Handler(void);
 #define THRESHOLD_GPIO_Port GPIOB
 #define LCD_RW_Pin GPIO_PIN_6
 #define LCD_RW_GPIO_Port GPIOC
+#define MOTOR_INT_Pin GPIO_PIN_9
+#define MOTOR_INT_GPIO_Port GPIOC
+#define MOTOR_INT_EXTI_IRQn EXTI9_5_IRQn
 #define MOTOR_P_Pin GPIO_PIN_8
 #define MOTOR_P_GPIO_Port GPIOA
 #define MOTOR_N_Pin GPIO_PIN_9
