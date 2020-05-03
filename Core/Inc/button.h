@@ -22,6 +22,7 @@ typedef enum
     BUTTON_SILENCE,             /** Silence button */
     SWITCH_MODE_SELECTION,      /** Switch mode */
     SWITCH_LIMIT,               /** Switch limit */
+    MOTOR_INT,                  /**  Motor external interrupt */
     MAX_BUTTON
 } Button_e;
 

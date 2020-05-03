@@ -65,27 +65,27 @@ void Task_CheckError(void)
     /* Status update */
     alarm_handle->status.not_set = ((knob_value->rr != applied_value->rr) ||
                                    (knob_value->tidal != applied_value->tidal) ||
-                                   (knob_value->ie10 != applied_value->ie10) ||
-                                   (knob_value->threshold != applied_value->threshold));
-    alarm_handle->status.high_pressure = (sensor_data->pressure >= HIGH_PRESSURE);
-    alarm_handle->status.low_pressure = (sensor_data->pressure <= LOW_PRESSURE);
+                                   (knob_value->ie10 != applied_value->ie10));
+                                //    (knob_value->threshold != applied_value->threshold));
+    // alarm_handle->status.high_pressure = (sensor_data->pressure >= HIGH_PRESSURE);
+    // alarm_handle->status.low_pressure = (sensor_data->pressure <= LOW_PRESSURE);
     // TODO: add other electrical fault or define other type of electrical fault in status struct
-    alarm_handle->status.electrical = ((sensor_data->lis >= CURRENT_THRESHOLD) ||
-                                      (sensor_data->ris >= CURRENT_THRESHOLD));
-    alarm_handle->status.plateau_exceed_pip = sensor_data->plateau > sensor_data->pip;
-    alarm_handle->status.peep_exceed_plateau = sensor_data->peep > sensor_data->plateau;
-    alarm_handle->status.peep_low = sensor_data->peep < PEEP_LOW_PRESSURE;
-    alarm_handle->status.plateau_high = sensor_data->plateau > PLATEAU_HIGH_PRESSURE;
-    alarm_handle->status.pip_high = sensor_data->pip > PIP_HIGH_PRESSURE;
-    alarm_handle->status.plateau_low = sensor_data->plateau < PLATEAU_LOW_PRESSURE;
-    alarm_handle->status.homing_fault = (task_handle->sys_state > HOMING) &&
-                                        Button_GetEvent(SWITCH_LIMIT) != LOW_LEVEL;
+    // alarm_handle->status.electrical = ((sensor_data->lis >= CURRENT_THRESHOLD) ||
+    //                                   (sensor_data->ris >= CURRENT_THRESHOLD));
+    // alarm_handle->status.plateau_exceed_pip = sensor_data->plateau > sensor_data->pip;
+    // alarm_handle->status.peep_exceed_plateau = sensor_data->peep > sensor_data->plateau;
+    // alarm_handle->status.peep_low = sensor_data->peep < PEEP_LOW_PRESSURE;
+    // alarm_handle->status.plateau_high = sensor_data->plateau > PLATEAU_HIGH_PRESSURE;
+    // alarm_handle->status.pip_high = sensor_data->pip > PIP_HIGH_PRESSURE;
+    // alarm_handle->status.plateau_low = sensor_data->plateau < PLATEAU_LOW_PRESSURE;
+    // alarm_handle->status.homing_fault = (task_handle->sys_state > HOMING) &&
+    //                                     Button_GetEvent(SWITCH_LIMIT) != LOW_LEVEL;
     //TODO: add home switch not touching when homing case
     // TODO: Add other errors which may happen in real life
 
     /* Catch status rising or falling edges */
-    status_rising = ~(alarm_handle->status.ui32Status) & old_status;
-    status_falling = alarm_handle->status.ui32Status & ~(old_status);
+    status_rising = (alarm_handle->status.ui32Status) & ~old_status;
+    status_falling = ~(alarm_handle->status.ui32Status) & old_status;
 
     for (i = 0; i < ERD_SIZE; i++)
     {

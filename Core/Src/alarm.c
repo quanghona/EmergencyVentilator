@@ -82,15 +82,16 @@ void Alarm_Silence(float f32Time)
 {
     if (abs(handle.silence_time) == SILENCE_TIMEOUT_TICK) return;
 
-    handle.silence_time = (int32_t)(f32Time * handle.tick_rate);   // Convert to alarm tick base
+    int32_t silence_tick = -(int32_t)(f32Time * handle.tick_rate);   // Convert to alarm tick base
     if (handle.enable == false)
     {
         handle.tick = 0;
         handle.cursor = -1;
     }
-    else
+    if (handle.silence_time == 0 || silence_tick > handle.silence_time)
     {
-        handle.silence_time = -handle.silence_time;
+        // Silence time with shorter duration will be priorirized
+        handle.silence_time = silence_tick;
     }
     _Alarm_OFF();
     // _LED_OFF();

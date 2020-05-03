@@ -34,6 +34,9 @@ typedef enum
     MC_COMMAND_CONFIGHOSTINTERRUPT = 0x10,
     MC_COMMAND_CONFIGPARAMETERS = 0x17,
     MC_COMMAND_CONFIGSAFETY = 0x18,
+    // MC_COMMAND_GETSTATUS = 0x0B,
+    // MC_COMMAND_GETREALPOSITION = 0x0C,
+    // MC_COMMAND_GETCURRENTVELOCITY = 0x0E,
     // MC_COMMAND_GETID = 0x1A,
     // MC_COMMAND_GETPARAMETERS = 0x1B,
     // MC_COMMAND_GETDEVICEDESCRIPTOR = 0x1C,
@@ -69,13 +72,15 @@ void MC_Execute();
 void MC_ConfigHostInterrupt(uint8_t ui8Interrupts);
 void MC_ConfigParameters(uint32_t Kp, uint32_t Ki, uint32_t Kd, uint8_t ui8Scale);
 void MC_ConfigSafety(uint32_t ui32Safety);
-// uint8_t MC_GetId();
+// uint16_t MC_GetId();
 // void MC_GetParameters(uint32_t* Kp, uint32_t* Ki, uint32_t* Kd, uint8_t* ui8Scale);
 // void MC_GetDeviceDescriptor(char* pcDesc);
 void MC_Reset();
 void MC_Homing(uint32_t ui32Accel, int32_t i32Vel, bool bWaitLogic1);
 void MC_ConfigId(uint8_t ui8ID);
 // void MC_ConfigBaudrate(uint8_t ui8Baud);
+
+void MC_SetComplete(void);
 
 /*****************************************************************************/
 #endif /* MOTOR_COMM_H_ */

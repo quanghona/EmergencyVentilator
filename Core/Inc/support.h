@@ -18,7 +18,8 @@
 void TIM4_delayus(uint16_t ui16Delay);
 // uint32_t strlen(char* s);
 // void memset(uint32_t* arr, uint32_t val, uint32_t len);
-int32_t abs(int32_t val);
+// int32_t abs(int32_t val);
+#define abs(val)                    ((val) < 0 ? -(val) : (val))
 
 /*****************************************************************************/
 #endif /* SUPPORT_H_ */

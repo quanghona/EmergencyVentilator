@@ -35,7 +35,7 @@ static void POT_ConvertRawToKnobValue()
     _knob_value.rr = (_POT_raw[0] >> 7) + 8;
     _knob_value.tidal = (_POT_raw[1] * 100) >> 12;
     _knob_value.ie10 = ((_POT_raw[2] * 30) >> 12) + 10;
-    _knob_value.threshold = (_POT_raw[1] * 100) >> 12;
+    _knob_value.threshold = (_POT_raw[3] * 100) >> 12;
 }
 
 /****************************Function definitions*****************************/

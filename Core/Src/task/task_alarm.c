@@ -28,17 +28,15 @@ void Task_Alarm(void)
 
     if (handle->enable)
     {
-        handle->tick++;
         /* Reserved for other uncommon cases in future */
         switch (handle->cursor)
         {
             case -1:
                 /* Alarm silence time */
-                if (handle->tick >= handle->silence_time)
+                if (++handle->silence_time >= 0)
                 {
                     handle->cursor++;
                     handle->tick = 0;
-                    handle->silence_time = 0;
                     Alarm_Toggle();
                     Alarm_LED_Toggle();
                 }
@@ -46,16 +44,16 @@ void Task_Alarm(void)
 
             default:
                 /* Tone loop here */
-                if (handle->tick >= (uint32_t)(handle->tone[handle->cursor]))
+                if (++handle->tick >= (uint32_t)(handle->tone[handle->cursor]))
                 {
                     handle->cursor = (handle->cursor + 1) % strlen(handle->tone);
                     handle->tick = 0;
                     Alarm_LED_Write(!(handle->cursor % 2));
-                    if (handle->silence_time == 0)
+                    if (handle->silence_time >= 0)
                     {
                         Alarm_SynchronizeWithLED();
                     }
-                    else if (handle->silence_time < 0)
+                    else
                     {
                         handle->silence_time++;
                     }

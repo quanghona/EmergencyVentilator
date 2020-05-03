@@ -10,6 +10,7 @@
 */
 
 #include "motor_comm.h"
+#include "constants.h"
 #include <stdarg.h>
 
 /****************************Private Definitions******************************/
@@ -22,7 +23,7 @@ extern UART_HandleTypeDef huart3;
 /* Command elements */
 const uint8_t MC_ELEMENT_START = 0x2A;
 const uint8_t MC_ELEMENT_END = 0x3E;
-const uint16_t MC_SLAVE_ID = 0x0001;
+const uint16_t MC_SLAVE_ID = 0xFFFF;    // Broadcast ID
 
 const char* const FORMAT_VELOCITY = "44";
 const char* const FORMAT_POSITION = "4444";
@@ -30,6 +31,7 @@ const char* const FORMAT_POSITION = "4444";
 /*********************************Variables***********************************/
 
 static uint8_t MC_frame[21];    // maximum support 16 data byte
+static bool isComplete = true;  // packge transfer complete flag
 
 /*************************Private function prototypes*************************/
 
@@ -95,8 +97,7 @@ inline void MC_Execute()
 
 inline void MC_ConfigHostInterrupt(uint8_t ui8Interrupts)
 {
-    if (ui8Interrupts < 0x04)
-        MC_AssembleCommand(MC_COMMAND_CONFIGHOSTINTERRUPT, "1", ui8Interrupts);
+    MC_AssembleCommand(MC_COMMAND_CONFIGHOSTINTERRUPT, "1", ui8Interrupts & 0x03);
 }
 
 inline void MC_ConfigParameters(uint32_t Kp, uint32_t Ki, uint32_t Kd, uint8_t ui8Scale)
@@ -110,7 +111,7 @@ inline void MC_ConfigSafety(uint32_t ui32Safety)
 }
 
 // TODO: Get data from external controller
-// uint8_t MC_GetId()
+// uint16_t MC_GetId()
 // {
 //     MC_AssembleCommand(MC_COMMAND_GETID, "");
 // }
@@ -146,6 +147,15 @@ inline void MC_ConfigId(uint8_t ui8ID)
 // }
 
 /******************************************************************************
+ * @brief Set package transfer completely flag
+ * 
+*****************************************************************************/
+inline void MC_SetComplete(void)
+{
+    isComplete = true;
+}
+
+/******************************************************************************
  * @brief Assemble all data into final frame and send to hardware
  * 
  * @details Frame format. <Start><IDL><IDH><command><data>...<end>
@@ -160,11 +170,14 @@ inline void MC_ConfigId(uint8_t ui8ID)
 static void MC_AssembleCommand(MC_Command_t command, const char* pFormat, ...)
 {
     va_list vaArgP;
-    int len = 4;
+    uint16_t len = 4;
     uint32_t value;
 
+    while (isComplete == false);    // Need to complete old package before sending new one
+    isComplete = false;
+    // Assign all variables to frame array
     va_start(vaArgP, pFormat);		// Start the varargs processing.
-    while (*pFormat++)              // Traverse the format string
+    while (*pFormat)              // Traverse the format string
     {
         value = va_arg(vaArgP, unsigned long);
         switch (*pFormat)
@@ -183,6 +196,7 @@ static void MC_AssembleCommand(MC_Command_t command, const char* pFormat, ...)
             default:
                 break;
         }
+        pFormat++;
     }
     va_end(vaArgP);	// End the varargs processing.
 
@@ -204,9 +218,7 @@ static void MC_AssembleCommand(MC_Command_t command, const char* pFormat, ...)
 *****************************************************************************/
 static void MC_ui32Toui8Array(uint32_t src, uint8_t* dst)
 {
-    int i;
-
-    for (i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
         dst[i] = (uint8_t)src; // Get the LSB
         src >>= 8;  // Prepare the next LSB

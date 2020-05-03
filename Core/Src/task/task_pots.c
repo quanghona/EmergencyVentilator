@@ -19,7 +19,7 @@ extern ADC_HandleTypeDef hadc2;
 
 inline void Task_ReadPOTs(void)
 {
-    HAL_ADC_Start_IT(&hadc2);
+    HAL_ADCEx_InjectedStart_IT(&hadc2);
 }
 
 /* End of task_pots.c */

@@ -48,7 +48,7 @@ void Sensor_UpdateValue(uint32_t* pui32Raw)
 SensorData_t* Sensor_GetData(void)
 {
     /* Convert data */
-    data.pressure = (22 * data_raw[0] - 68250) / 2457.0f * KPA_TO_CMH2O_FACTOR;
+    data.pressure = (float)(22 * data_raw[0] - 68250) / 2457.0f * KPA_TO_CMH2O_FACTOR;
     data.angle = data_raw[1];
     data.ris = data_raw[2];
     data.lis = data_raw[3];

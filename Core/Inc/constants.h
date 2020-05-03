@@ -19,17 +19,17 @@
 /* Task */
 #define TASK_ALARM_FREQUENCY                    10
 #define TASK_LCD_FREQUENCY                      5
-#define TASK_READ_POT_FREQUENCY                 40
+#define TASK_READ_POT_FREQUENCY                 10
 #define TASK_BUTTON_FREQUENCY                   20
 #define TASK_CHECK_ERROR_FREQUENCY              20
 #define TASK_DISPLAY_MESSAGE_FREQUENCY          1
 
-/* Timeout. Unit: tick of Task alarm */
-#define SILENCE_TIMEOUT                         600.0f
+/* Timeout. Unit: second, minimum resolution: 1 digit after decimal dot */
+#define SILENCE_TIMEOUT                         60.0f
 #define PRESSURE_OUTRANGE_TIMEOUT               0.0f
 #define ELECTRICAL_FAULT_TIMEOUT                0.0f
 #define HOMING_FAULT_TIMEOUT                    0.0f
-#define POT_CHANGE_TIMEOUT                      50.0f
+#define POT_CHANGE_TIMEOUT                      5.0f
 
 /* Messages */
 extern const char const MESSAGE_EMPTY[];
@@ -66,6 +66,13 @@ extern const float PEEP_LOW_PRESSURE;
 extern const float PLATEAU_HIGH_PRESSURE;
 extern const float PIP_HIGH_PRESSURE;
 extern const float PLATEAU_LOW_PRESSURE;
+
+/* Motion parameters */
+extern const int POSITION_ZERO;
+extern const int POSITION_END;
+extern const int PULSE_FACTOR;
+
+extern const float HOLDING_TIME;
 
 /*****************************************************************************/
 #endif /* CONSTANTS_H_ */

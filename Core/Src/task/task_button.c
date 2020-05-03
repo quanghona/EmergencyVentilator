@@ -28,7 +28,6 @@ void Task_ConfirmButton(void)
     {
         Button_SetEvent(BUTTON_CONFIRM, NO_EVENT);
         POT_ApplyValue();
-        Alarm_Disable();
     }
 }
 

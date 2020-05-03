@@ -14,6 +14,10 @@
 #include "support.h"
 #include <string.h>
 
+/*************************Private function prototypes*************************/
+
+static void Task_TurnOffTimer(void);
+
 /*********************************Variables***********************************/
 static TaskHandle_t handle;
 
@@ -21,7 +25,7 @@ static TaskHandle_t handle;
 // TODO: define task list
 typedef void (*Task_t)();
 static const Task_t TaskList[TASK_CAPACITY] = {
-    NULL,
+    &Task_TurnOffTimer,
     &Task_UpdateLCD,
     &Task_ReadPOTs,
     &Task_Alarm,
@@ -65,6 +69,7 @@ static const Task_t TaskList[TASK_CAPACITY] = {
 void Task_Init(uint32_t ui32Rate)
 {
     handle.enable = 0;
+    handle.flag = 0;
     memset(handle.period, 0, TASK_CAPACITY);
     memset(handle.current_tick, 0, TASK_CAPACITY);
     handle.tick_rate = ui32Rate;
@@ -123,12 +128,12 @@ void Task_Disable(uint32_t ui32TaskID)
 *****************************************************************************/
 void Task_IncreaseTick(void)
 {
-    int i;
+    uint32_t i;
     uint32_t mask;
 
     for (i = 0; i < TASK_CAPACITY; i++)
     {
-        mask = 1 << i;
+        mask = 1UL << i;
         if (handle.enable & mask)
         {
             if (++(handle.current_tick[i]) >= handle.period[i])
@@ -147,18 +152,51 @@ void Task_IncreaseTick(void)
 *****************************************************************************/
 void Task_Execute(void)
 {
-    int i;
+    uint32_t i;
     uint32_t mask;
 
     for (i = 0; i < TASK_CAPACITY; i++)
     {
-        mask = 1 << i;
+        mask = 1UL << i;
         if (handle.flag & mask)
         {
             handle.flag &= ~mask;
             TaskList[i]();      // Execute task here
         }
     }
+}
+
+/******************************************************************************
+ * @brief Fire a one short timer handle by task handler
+ * 
+ * @param ui32Durationms duration in milliseconds
+*****************************************************************************/
+void Task_StartOneShotTimer(uint32_t ui32Durationms)
+{
+    handle.enable |= 0x00000001;
+    handle.period[0] = handle.tick_rate * ui32Durationms / 1000;
+    handle.current_tick[0] = 0;
+}
+
+/******************************************************************************
+ * @brief Check if the timer is expired
+ * 
+ * @return true 
+ * @return false 
+*****************************************************************************/
+bool Task_IsTimerExpired(void)
+{
+    return handle.current_tick[0] == handle.period[0];
+}
+
+/******************************************************************************
+ * @brief Timer callback when period is elapsed
+ * 
+*****************************************************************************/
+static void Task_TurnOffTimer(void)
+{
+    handle.enable &= 0xFFFFFFFE;
+    handle.current_tick[0] = handle.period[0];
 }
 
 /* End of task_base.c */

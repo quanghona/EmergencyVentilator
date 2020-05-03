@@ -76,10 +76,10 @@ void Error_Handler(void);
 #define PRESSURE_GPIO_Port GPIOA
 #define ANGLE_Pin GPIO_PIN_3
 #define ANGLE_GPIO_Port GPIOA
-#define MOTOR_RIS_Pin GPIO_PIN_4
-#define MOTOR_RIS_GPIO_Port GPIOA
-#define MOTOR_LIS_Pin GPIO_PIN_5
+#define MOTOR_LIS_Pin GPIO_PIN_4
 #define MOTOR_LIS_GPIO_Port GPIOA
+#define MOTOR_RIS_Pin GPIO_PIN_5
+#define MOTOR_RIS_GPIO_Port GPIOA
 #define BPM_Pin GPIO_PIN_6
 #define BPM_GPIO_Port GPIOA
 #define TIDAL_Pin GPIO_PIN_7

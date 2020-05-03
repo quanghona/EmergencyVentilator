@@ -59,9 +59,9 @@ void TIM4_delayus(uint16_t ui16Delay)
  * @param val value
  * @return int32_t absolute value
 *****************************************************************************/
-int32_t abs(int32_t val)
-{
-    return val < 0 ? -val : val;
-}
+// int32_t abs(int32_t val)
+// {
+//     return val < 0 ? -val : val;
+// }
 
 /* End of support.c */

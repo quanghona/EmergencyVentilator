@@ -44,9 +44,16 @@ const uint8_t const TONE_HOMING_FAULT[] = {0x0A, 0x0A, 0x00};
 const float HIGH_PRESSURE = 40;                 /* Unit: cmH20 */
 const float LOW_PRESSURE = 5;                   /* Unit: cmH20 */
 const float CURRENT_THRESHOLD = 10;             /* Unit: A */
-const float PEEP_LOW_PRESSURE = 0;              //TODO: TBD
+const float PEEP_LOW_PRESSURE = 5;              //TODO: TBD
 const float PLATEAU_HIGH_PRESSURE = 30;
 const float PIP_HIGH_PRESSURE = 40;
 const float PLATEAU_LOW_PRESSURE = 5;
+
+/* Motor Position */
+const int POSITION_ZERO = -400;
+const int POSITION_END = -1400;
+const int PULSE_FACTOR = -10;    //(POSITION_END - POSITION_ZERO) / 100;
+
+const float HOLDING_TIME = 0.2f;    // hodling time between inpiratory and expiratory phase, Unit second
 
 /* End of constants.c */

@@ -69,6 +69,9 @@ void Task_DisplayMessage(void);
 bool LCD_AddMessage(const char* pi8Message);
 bool LCD_RemoveMessage(const char* pi8Message);
 
+void Task_StartOneShotTimer(uint32_t ui32Duration);
+bool Task_IsTimerExpired(void);
+
 /*****************************************************************************/
 
 #endif /* TASK_H_ */
