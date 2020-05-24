@@ -46,5 +46,8 @@ Regular task are listed below:
 Controlling task: A special task that handle the high speed task, i.e. motor controlling.
 
 
+## Developer guide
+[Link](./develop.md)
+
 ## References
 [1] https://e-vent.mit.edu/
